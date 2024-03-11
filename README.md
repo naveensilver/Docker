@@ -109,12 +109,35 @@ Pending {FLM}
 
 ![image](https://github.com/naveensilver/Docker/assets/120022254/b1c14ca7-27b2-43d6-8b4f-fecab691d59b)
 
+- Instead of installing multiple VM on host OS. we will use Containerisation.
 
-### Advantages:
+- Containerisation used to pack the application along with dependencies in one container to run application is called Containerization.
 
-### Dis-Advantages:
+- Container is nothing but it is a virtual machine which does not have any OS. 
 
+- Instead of OS, we will use images to create multiple container.
 
+- Docker engine is used to create multiple containers in same machine.
+
+- Container will take care of everything. which is required to run our application.
+
+- Containers are lightweight and We can run multiple containers at a time.
+
+### Advantages Over Virtualisation:
+
+- Containers on same OS kernel are lighter & smaller 
+
+- Better resource utilisation compared to VM 
+
+- Short Boot-up process (1/20th of a second)
+
+### Conclusion 
+
+- Docker is Containerization Software
+ 	
+- Docker will take care of application and application dependencies to run application.
+
+- Deployments into multiple environments will become easy if we use docker containers concept.
 
 # Before Docker & After Docker 
 
@@ -122,4 +145,3 @@ Pending {FLM}
 
 # Image And Containers
 
-#
