@@ -1,3 +1,7 @@
+# Monolithic And Microlithic Service Architecture 
+
+Pending {FLM}
+
 # Docker
 
 - Docker is Open-source containerization platform to create, deploy and run application.
@@ -26,12 +30,50 @@
 
 - Using Docker image, we can create docker container and we can run multiple containers using single image.
 
-
-# Monolithic And Microlithic Service Architecture 
-
-
 # Why Docker 
 
+- Let’s assume that we are developing a software project.
+
+- The Collection of programs is called as software project and every Software project contains several components.
+
+	1. Front end components (User interface logic)
+		- Angular, React, HTML & CSS, J Query
+
+	2. Backend components (Business logic)
+		- Java 1.8v, Spring boot
+
+	3. Database (Persistence login)
+		- MySQL DB, Mango DB
+
+- To develop the application, we need to install those dependencies to run our code.
+
+- In order to deploy our application in a machine, we need to setup all the Software. which are required to run our application.
+
+	- Ex: OS, Java 11v, MySQL DB, Tomcat Webserver 9.0v etc..
+
+- In real time, Project should be deployed into multiple env for testing purpose.
+
+    - Ex: DEV, SIT, UAT, PILOT and PROD 
+
+        - Dev env will be used by developers to perform integration testing.
+
+        - SIT (System Integration Testing) env will be used by testing team to test functionality of the application.
+
+        - UAT (User Acceptance Testing) env will be used by Client to test functionality of the application.
+
+        - PILOT env means pre-production testing env.
+
+        - PROD env means live env where public can access the application. (It is used to deliver the project)
+
+- After some time, i need another version of java, react and mango DB for my application to run the code.
+
+- So, its difficult situation to maintain multiple versions of same tool in our system.
+
+### `To overcome this problem, we use Virtualisation`
+
+## Virtualisation :
+
+# 
 # Virtualisation And Containerisation - Architecture 
 
 # Docker 
