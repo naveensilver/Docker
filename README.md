@@ -144,7 +144,7 @@ Pending {FLM}
 ![image](https://github.com/naveensilver/Docker/assets/120022254/d5681b9f-676b-47f2-839e-48770446e83c)
 ![image](https://github.com/naveensilver/Docker/assets/120022254/1c53922f-ffad-4f61-a586-60cc4987c94a)
 
-# Docker Architecture 
+# Docker Complete Architecture 
 
 ![image](https://github.com/naveensilver/Docker/assets/120022254/c17d27c7-59f1-4e81-ab63-0b1c313a0a99)
 
@@ -192,7 +192,7 @@ Overall, Docker architecture provides a powerful and flexible platform for build
 
 ![image](https://github.com/naveensilver/Docker/assets/120022254/2cfdd07a-b49e-4d73-a22e-97138bb56692)
 
-
+# Install Docker in Amazon-Linux
 [RE-Check] Here
 
 docker info 
@@ -254,8 +254,9 @@ Q) Diff b/w Docker Run & Docker Pull
 
 - Syntax : ``` docker pull [imageName] ```
 
-# Docker File Architecture :
+# Docker File Architecture | Docker Architecture:
 
+![Screenshot (103)](https://github.com/naveensilver/Docker/assets/120022254/9abd688c-6ed9-41ed-bd88-a21cb932ecc1)
 
 # Image And Containers
 
