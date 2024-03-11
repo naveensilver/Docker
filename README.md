@@ -71,12 +71,50 @@ Pending {FLM}
 
 ### `To overcome this problem, we use Virtualisation`
 
-## Virtualisation :
+## Virtualisation | Virtualisation - Architecure :
 
-# 
-# Virtualisation And Containerisation - Architecture 
+![image](https://github.com/naveensilver/Docker/assets/120022254/295f0631-3b24-47f2-9a5d-fd388f30a31c)
 
-# Docker 
+- Installing multiple Guest OS in one Host OS is called Virtualisation.
+
+- Using Hypervisor, we will create multiple virtual machines in our machine
+
+- In that Virtual Machine, we can host Guest OS in our Machine
+
+- By using Guest OS, we can run multiple Application in same machine.
+
+- It is old technique to run the application.
+
+- System performance will become slow in this process.
+
+### Advantages:
+
+- Multiple OS in same machine.
+
+- Easy Maintenance & Recovery 
+
+- Lower total cost of Ownership
+
+### Dis-Advantages:
+
+- It is old method to run the application.
+
+- If we use multiple VM then the performance of the system is low.
+
+- Long boot-up process (Approx 1 min)
+
+### `To over-come this virtualisation, we use Containerization Concept`
+
+## Containerisation | Containerisation - Architecure :
+
+![image](https://github.com/naveensilver/Docker/assets/120022254/b1c14ca7-27b2-43d6-8b4f-fecab691d59b)
+
+
+### Advantages:
+
+### Dis-Advantages:
+
+
 
 # Before Docker & After Docker 
 
