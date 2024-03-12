@@ -231,8 +231,9 @@ sudo yum update -y
 sudo yum install docker -y
 ```
 4. To check docker version 
+```
 sudo docker version 
-
+```
 5. Start the Docker service:
 ```
 sudo service docker start
@@ -243,21 +244,25 @@ sudo systemctl start docker
 ```
 6. Add your user to the docker group to be able to run Docker commands without using sudo:
 ```
-sudo usermod -a -G docker ec2-user
+sudo usermod -aG docker ec2-user
 ```
 Note: Replace ec2-user with your username.
 
 7. Verify that Docker is running by running the following command:
 ```
-docker info
+sudo systemctl status docker 
 ```
-
 8. To stop the docker service
 ```
-systemctl stop docker 
+sudo systemctl stop docker
 ```
-That's it! You have now successfully installed Docker on Amazon Linux. You can now start using Docker to build, run, and manage containers
+9. To get Docker Info
 
+```
+sudo docker info 
+```
+
+That's it! You have now successfully installed Docker on Amazon Linux. You can now start using Docker to build, run, and manage containers
 
 
 [RE-Check] Here
