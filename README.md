@@ -1,8 +1,28 @@
-# Monolithic And Microlithic Service Architecture 
+# What is Monolithic And Microlithic Service Architecture ?
 
-Pending {FLM}
+![image](https://github.com/naveensilver/Docker/assets/120022254/211bfe17-e93d-4db0-90ff-f4e80bc40ec9)
 
-# Docker
+## Monolithic 
+
+- If the application contains N number of services.
+
+    - Ex: Paytm has Money Transaction, Movie ticket, Train Ticket.. etc 
+
+- If all the services are included in one server then it will be called as Monolithic Architecture.
+
+- Every Monolithic has only one database for all the services.
+
+## Micro-Service 
+
+- If the application contains N number of services.
+
+    - Ex: Paytm has Money Transaction, Movie ticket, Train Ticket.. etc
+
+- If every service has its own individual servers then it is called Microservices.
+
+- Every Micro service architecture has its own database for each service.
+
+# Introduction to Docker
 
 - Docker is Open-source containerization platform to create, deploy and run application.
 
@@ -36,14 +56,16 @@ Pending {FLM}
 
 - The Collection of programs is called as software project and every Software project contains several components.
 
-	1. Front end components (User interface logic)
-		- Angular, React, HTML & CSS, J Query
+![Screenshot (105)](https://github.com/naveensilver/Docker/assets/120022254/7cacb8e2-c5c4-4800-bc58-25a2906899d3)
 
-	2. Backend components (Business logic)
-		- Java 1.8v, Spring boot
+1. Front end components (User interface logic)
+	- Angular, React, HTML & CSS, J Query
 
-	3. Database (Persistence login)
-		- MySQL DB, Mango DB
+2. Backend components (Business logic)
+	- Java 1.8v, Spring boot
+
+3. Database (Persistence login)
+	- MySQL DB, Mango DB
 
 - To develop the application, we need to install those dependencies to run our code.
 
@@ -195,6 +217,7 @@ Overall, Docker architecture provides a powerful and flexible platform for build
 ![image](https://github.com/naveensilver/Docker/assets/120022254/2cfdd07a-b49e-4d73-a22e-97138bb56692)
 
 # Install Docker in Amazon-Linux
+
 [RE-Check] Here
 
 docker info 
