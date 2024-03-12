@@ -218,6 +218,48 @@ Overall, Docker architecture provides a powerful and flexible platform for build
 
 # Install Docker in Amazon-Linux
 
+To install Docker on Amazon Linux, you can follow these steps:
+
+1. Connect to your Amazon Linux instance using SSH.
+
+2. Update the package manager to ensure that you have the latest version of the package list:
+```
+sudo yum update -y
+```
+3. Install the Docker package and its dependencies:
+```
+sudo yum install docker -y
+```
+4. To check docker version 
+sudo docker version 
+
+5. Start the Docker service:
+```
+sudo service docker start
+```
+(OR)
+```
+sudo systemctl start docker
+```
+6. Add your user to the docker group to be able to run Docker commands without using sudo:
+```
+sudo usermod -a -G docker ec2-user
+```
+Note: Replace ec2-user with your username.
+
+7. Verify that Docker is running by running the following command:
+```
+docker info
+```
+
+8. To stop the docker service
+```
+systemctl stop docker 
+```
+That's it! You have now successfully installed Docker on Amazon Linux. You can now start using Docker to build, run, and manage containers
+
+
+
 [RE-Check] Here
 
 docker info 
