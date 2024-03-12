@@ -146,6 +146,8 @@ Pending {FLM}
 
 # Docker Complete Architecture 
 
+![image](https://github.com/naveensilver/Docker/assets/120022254/8c27fbeb-8271-4328-b5e4-d0b7840f5860)
+
 ![image](https://github.com/naveensilver/Docker/assets/120022254/c17d27c7-59f1-4e81-ab63-0b1c313a0a99)
 
 The architecture of Docker consists of several components that work together to create a container environment:
