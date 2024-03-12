@@ -1,6 +1,6 @@
 # What is Monolithic And Microlithic Service Architecture ?
 
-![image](https://github.com/naveensilver/Docker/assets/120022254/211bfe17-e93d-4db0-90ff-f4e80bc40ec9)
+![image](https://github.com/naveensilver/Docker/assets/120022254/07428a02-98df-4185-a6da-56e2eb875d68)
 
 ## Monolithic 
 
