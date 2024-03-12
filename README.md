@@ -133,9 +133,9 @@
 
 - Instead of installing multiple VM on host OS. we will use Containerisation.
 
-- Containerisation used to pack the application along with dependencies in one container to run application is called Containerization.
+- `Containerisation` used to pack the application along with dependencies in one container to run application is called Containerization.
 
-- Container is nothing but it is a virtual machine which does not have any OS. 
+- `Container` is nothing but it is a virtual machine which does not have any OS. 
 
 - Instead of OS, we will use images to create multiple container.
 
@@ -264,18 +264,33 @@ sudo docker info
 
 That's it! You have now successfully installed Docker on Amazon Linux. You can now start using Docker to build, run, and manage containers
 
+-----------------------------------
 
-[RE-Check] Here
+Note: If you use MobaXterm to install docker  
 
-docker info 
+After adding user to group `$ sudo usermod -aG docker ec2-user`
 
-docker pull hello-world 
+Run command `$ exit` #Exit from the session 
 
->> docker images
+Then press 'R' to restart the session (MobaXterm)
 
-docker run hello-world 
+Q) Execute Hello-World Image (Or) Create image and Container using Docker Commands:
+------------------------------------------------------------------------------------
 
->> hello world image got executed and created a new container.
+- Check the docker info `$ docker info`
+
+- Now Pull the image `$ docker pull <ImageName>` i.e., `$ docker pull hello-world`
+
+    - Here, docker pull is used to pull/download images from Docker-Hub
+    - hello-world is the default image stored in Docker-Hub
+
+- To see list of docker images `$ docker images `
+
+- To run docker image `$ docker run <image-id/name>` i.e., `$ docker run hello-world `
+
+> hello world image got executed and created a new container.
+
+- check the list of containers `$ docker ps`
 
 Q) How This Docker image got executed 
 ------------------------------------
@@ -295,7 +310,6 @@ Docker Build
 Docker Run
 
 Docker Pull 
-
 
 Q) Diff b/w Docker Run & Docker Pull 
 ------------------------------------
@@ -326,9 +340,27 @@ Q) Diff b/w Docker Run & Docker Pull
 
 - Syntax : ``` docker pull [imageName] ```
 
+## Docker Build [Pending]
+
 # Docker File Architecture | Docker Architecture:
 
 ![Screenshot (103)](https://github.com/naveensilver/Docker/assets/120022254/9abd688c-6ed9-41ed-bd88-a21cb932ecc1)
 
 # Image And Containers
 
+
+
+# Docker Commands
+
+docker -v 
+docker info # To see docker info 
+docker help 
+docker login # To Connect Docker Hub Account 
+docker images  # To see list of docker images
+docker ps # To See List of Container
+docker pull <image-id> #download the docker image from docker-hub
+docker run <image-id> 
+docker push <image-id> # To store the image in Docker Hub
+docker build # used to build the image from docker file
+docker tag #Image Versions 
+docker rmi <image-id>
