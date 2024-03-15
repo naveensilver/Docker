@@ -599,3 +599,112 @@ Note: The Password stored Unencrypted in /home/ec2-user/.docker/config.json
 
 
 # Docker File 
+
+Docker file is a text file. which contains some set of instructions to build docker image.
+
+Docker file is automation of docker image creation.
+
+Docker file is used to create our own image.
+
+In docker file, we will use DSL (Docker Specific Language) keywords.
+
+Docker Engine will process Dockerfile instructions from Top to Bottom
+
+Docker command should run where your docker file exists.
+
+Below are the Dockerfile Keywords/Components >>
+
+```
+FROM 
+MAINTAINER 
+COPY 
+ADD 
+RUN 
+CMD 
+ENTRYPOINT 
+WORKDIR 
+ENV 
+LABEL 
+USER 
+EXPOSE 
+VOLUME 
+```
+Note: The components should be in Capital letters and also 'D' is capital in "Dockerfile".
+
+Docker File Architecture | How Docker File Works 
+-------------------------------------------------
+
+Using Docker file, we can create our own image.
+
+1. Create Docker file : In the docker file, we will write some set of instructions.
+
+```	
+    vi Dockerfile
+``` 
+Add below instructions inside Dockerfile
+```
+	FROM ubuntu 
+	RUN echo "run one"
+	RUN echo "run two"
+	CMD echo "echo from image'
+	CMD echo "echo from latest"
+```
+
+2. Build Docker File : Using docker file, we will create our own image by executing below command 
+```
+    docker build -t <imageName> .    
+```
+Here, 
+
+- `-t` used to specify the image name.
+
+- `.`represents current directory. it will search for Dockerfile in the current location.
+
+- Then the docker image created. and check the docker image list 
+```
+    docker images
+```
+
+3. We will store that Docker image in Docker Hub using 
+```
+    docker push
+```
+
+- Whenever, you want to push the image to public repo. first u need to tag that image and push the image.
+
+- By using Image Tag command (Tag means giving ID) `docker tag <imageName> username/<RepoName>`
+
+```
+    docker tag image1 naveensilver/myrepo
+```
+- Now, Push that image in Docker Hub
+```
+    docker push naveensilver/myrepo
+```
+4. Whenever we want to create a container by using this image.
+
+- First, we can pull that image from Docker hub using 
+```
+    docker pull naveensilver/myrepo : latest'
+```
+- Then, we can create container using
+```
+    docker run -it --name cont1 naveensilver/myrepo'
+```
+Note: We can Create No. of containers using that image.
+
+5. Then the container will be created successfully. Check the containers list 
+```
+    docker ps -a'
+```
+
+In real time also, we store that image in Project Docker Hub
+
+So, We can Pull & Run the image in Multiple Environments. Ex: Dev, Test, Prod
+
+Note: If you inspect image `docker image inspect <image1>`. We can see the layers. i.e, No of tasks = No. of layers. 
+
+---------------------
+
+### Docker File Components/Keywords :
+
