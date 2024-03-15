@@ -389,13 +389,15 @@ Q) How This Docker image got executed
 
 4. The Container application provides infomation to docker engine, The docker engine/daemon sent the output to docker client in the terminal (CLI)
 
-### Understand the Difference:
+# Docker File Architecture | Docker Architecture:
 
-Docker Build 
+![Screenshot (103)](https://github.com/naveensilver/Docker/assets/120022254/9abd688c-6ed9-41ed-bd88-a21cb932ecc1)
 
-Docker Run
+There are three important things,
 
-Docker Pull 
+1. docker build -> builds docker images from Dockerfile
+2. docker run   -> runs container from docker images
+3. docker push  -> push the container image to public/private regestries to share the docker images.
 
 Q) Diff b/w Docker Run & Docker Pull 
 ------------------------------------
@@ -428,15 +430,6 @@ Q) Diff b/w Docker Run & Docker Pull
 
 ## Docker Build [Pending]
 
-# Docker File Architecture | Docker Architecture:
-
-![Screenshot (103)](https://github.com/naveensilver/Docker/assets/120022254/9abd688c-6ed9-41ed-bd88-a21cb932ecc1)
-
-There are three important things,
-
-1. docker build -> builds docker images from Dockerfile
-2. docker run   -> runs container from docker images
-3. docker push  -> push the container image to public/private regestries to share the docker images.
 
 # Image And Containers
 
@@ -445,14 +438,164 @@ There are three important things,
 # Docker Commands
 
 docker -v 
-docker info # To see docker info 
+
+docker info # To see docker info
+
 docker help 
+
 docker login # To Connect Docker Hub Account 
+
 docker images  # To see list of docker images
+
 docker ps # To See List of Container
+
 docker pull <image-id> #download the docker image from docker-hub
+
 docker run <image-id> 
+
 docker push <image-id> # To store the image in Docker Hub
+
 docker build # used to build the image from docker file
-docker tag #Image Versions 
+
+docker tag #Image Versions
+
 docker rmi <image-id>
+
+- To Check Images List : `$ docker images`
+
+- To Check Container list : `$ docker ps -a`
+
+- To pull the image from Docker hub : `docker pull <imageName>`
+
+- To Create image as well as Container : `docker run <ImageName>`
+
+- To Start container :  `docker start <container_ID/ContainerName>`
+
+- To Delete stopped container (few) : `docker rm <container_ID/ContainerName> `
+- To Delete all the stopped/Exited containers (Multiple) : `docker container prune`
+
+Note : we can't remove running containers 
+
+- To Remove Image : $ docker rmi <ImageName>
+
+# Docker Image Commands:
+
+# Docker Container Commands
+
+Q) How to create a Image from Container?
+
+```
+docker commit <contName> <imageName>
+```
+
+Q) How to copy Data/Files from one Container to Multiple Containers
+
+- Create container using Nginx image 
+
+```
+    docker run -it --name cont1 Nginx
+```
+
+- Enter into cont1, add some files inside cont1 and exit from cont1
+
+```
+    docker exec -it cont1 /bin/bash  
+    touch file{1..5}
+    exit
+```
+- Now check the container list 
+
+```
+    docker ps -a
+```
+- Now Create image1 from cont1
+```
+    docker commit cont1 image1
+```
+Image ID got generated Ex: sha6874676761697
+
+- Check image list
+```
+docker images
+```
+Here, you can see the "image1"
+
+If you create containers from this image1. You will get all the image1 files inside container.
+
+Note: We can share the data from container to multiple containers by using image.
+
+
+Q) How To Change Container Port Number
+
+- First Stop that Container 
+
+```
+    docker stop <contName>
+```
+- Go To Docker default Directory Path
+```
+    cd /var/lib/docker/
+```
+- Go to container directory (you can see the container ID’s)
+
+```
+    cd containers/
+```
+- Go to suitable container ID 
+
+```
+    cd h54fdasdfae68df6vvbthehenbscfrt6ryh64846fv
+```
+- Open host config file
+```
+    vim hostconfig.json 
+```
+
+- Change the Host Port number and save & exit the file forcefully and run below commands 
+```
+    :wq! 
+    systemctl restart docker 
+    docker start cont1
+    docker ps 
+```
+Q) Why Host Port is 80 for Every Container 
+
+- Because all the webserver like Nginx, Apache are running in default 80 port. 
+
+
+## Docker HUB
+
+- Docker Hub is Cloud-based repository provided by Docker.
+
+- Docker hub is free and open source Centralised platform.
+
+- Docker Hub allows users to store, retrieve and share the docker images.
+
+- Additionally, it allows user to upload the docker images and make them available to other in the community
+
+### Why Docker Hub
+
+-	In real time, We write the docker file and build the image using docker file 
+
+-	By using docker hub, we store that image.
+
+-	We can Pull & Run the image in any environment. Ex: Dev, Test, Prod
+
+Q) How to Create Docker Hub 
+
+- Search ‘hub.docker.com’ in Browser
+
+- Create Account
+
+Q) How to Connect and login Docker-Hub 
+
+- Run the command in CLI 
+```
+    docker login 
+```
+Now Enter Docker Hub Username & Password.
+
+Note: The Password stored Unencrypted in /home/ec2-user/.docker/config.json
+
+
+# Docker File 
