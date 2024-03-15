@@ -708,3 +708,297 @@ Note: If you inspect image `docker image inspect <image1>`. We can see the layer
 
 ### Docker File Components/Keywords :
 
+1. FROM 
+
+- It indicates Base image to run our application.
+
+- Base images are required to create our own images. Base images are already stored in Docker Hub.
+
+- `FROM` must be on the top of the Dockerfile.
+
+- Syntax: `FROM <Base-imageName>`
+
+Ex: 
+```
+	FROM ubuntu 	      #i want to run my app using ubuntu OS
+	FROM java:jdk-1.8.0   #For java application we need jdk 
+	FROM tomcat:9.2	      #Server - For accessing application
+```
+Note: We can configure more than one base image and maintained in new line.
+
+
+2. MAINTAINER / LABEL: 
+
+- It Represents who is author of Dockerfile
+
+- Labelling like Author Name, Email.. etc 
+
+- Syntax :  `MAINTAINER <EMP ID>` OR `LABEL <Emp ID>`
+
+Ex: 
+```
+MAINTAINER Naveensilver <naveensilver@gmail.com>
+```
+
+3. COPY : 
+
+- It is used to copy files/folder from local to Docker VM while creating image.
+
+- Syntax: `COPY <source> <destination>`
+
+Ex: Copying war file from target directory to tomcat/webapp directory
+
+```
+    COPY target/maven-web-app.war /usr/local/tomcat/webapp/maven-web-app.war 
+```
+4. ADD
+
+- ADD used to copy files to image while creating an image.
+
+- Syntax: `ADD <source> <dest>`
+
+ADD keyword can download the files from internet and extract files.
+
+ADD keyword will extract tar file while copying to image.
+
+- Syntax:  `ADD <url-to-download> <dest>`
+
+Ex:
+```
+ADD http://dlcdn.apache.org/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz myfolder/maven
+```
+Note: zip files, we have to extract manually.
+
+Q) Diff B/w RUN, CMD & ENTRYPOINT 
+
+5. RUN 
+
+- RUN used to execute the commands on top of base image.
+
+- RUN instructions will execute while creating an image.
+
+- We can write multiple RUN instructions, they will execute in order (Top-Bottom)
+
+- Syntax : RUN `<Commands>`
+
+Ex: 
+```
+ 		RUN mkdir foldername
+		RUN yum install git -y 
+```
+
+6. CMD 
+
+- CMD is also used to execute commands.
+
+- CMD instruction will execute while creating container(Running a image).
+
+- We Can write multiple CMD instructions in Dockerfile but docker will execute only last CMD instructions.
+
+Note: There is no use of writing multiple CMD instructions in Dockerfile.
+
+Syntax: `CMD sudo start tomcat`
+
+Ex: Sample Dockerfile 
+```
+From Ubuntu
+MAINTAINER Naveen 2269305
+RUN echo "run one"
+RUN echo "run two"
+CMD yum install git -y            # [“yum”, “install”, “git”,”-y”] 
+CMD echo "cmd one"                # ["echo","cmd one"]
+CMD echo "cmd two"
+RUN echo "run three"
+```
+- Build image using docker file `docker build -t image1 .` 
+
+- Check the image list `docker images`
+
+- To run the image | To creating a container
+```
+    docker run image1    #O/p : cmd two 
+```
+Note : CMD instruction we can overwrite using runtime CMD	
+```
+    docker run image1 date #It will print only time & date 
+    docker run image1 whoami #O/p : root (Ubuntu) 
+```
+
+7. ENTRYPOINT
+
+- Entrypoint instructions will execute while creating container(Run a image)
+
+- ENTRYPOINT has high priority than CMD because it will overwrite the values of CMD.
+
+- We can't Overwrite ENTRYPOINT instructions.
+
+Syntax : ENTRYPOINT ["echo" , "Welcome to My world"]
+
+Ex1: 
+```
+    FROM centos:centos7
+    CMD [“yum”, “install”, “tree”,”-y”] 
+    ENTRYPOINT [“yum”, “install”, “git”,”-y”] 
+```
+- Build image `docker build -t <imageName> .`
+
+- Run the image/ Create container `docker run <imageName>`
+
+- ENTRYPOINT will execute while creating a container.
+
+Note: If we give `CMD` and `ENTRYPOINT` in Dockerfile. Docker will execute only ENTRYPOINT. Bcz it has high priority.
+
+Ex2: Using ENTRYPOINT, We can Perform tasks in CLI.
+```
+    FROM centos:centos7
+    ENTRYPOINT [“yum”, “install”, “tree”,”-y”] 
+    ENTRYPOINT [“yum”, “install”, “git”,”-y”] 
+```
+- Only latest task will perform. If you want to run multiple ENTRYPOINT we can perform in CLI.
+
+- Now, Build the image `docker build -t <imageName> .`
+
+- Run the Image/Create Container `docker run <imageName> tree maven`
+
+- Now Check the Container list `docker ps -a` 
+
+- We can see tree, git and maven also. maven is executed through CLI.
+
+Note: We can't perform these activities in CMD.
+
+Ex3: 
+```
+    FROM centos:centos7
+    ENTRYPOINT [“yum”, “install”,”-y”] 
+    CMD [‘tree”]
+
+```
+- It will run CMD bcz we have not mentioned anything in Entrypoint. So,it will install tree.
+
+- If u give the package name in command line while building the container.`docker run image httpd` => it will install only httpd 
+
+8. WORKDIR 
+
+- Used to set working directory for an image/container[Project files]
+
+- Syntax: `WORKDIR <Dir-Path>`
+
+Note: The dockerfile instructions which are available after WORKDIR those instructions will be process from given working directory.
+
+Ex: Create Dockerfile 
+
+```
+    FROM centos:centos7
+    LABEL silver "silver@gmail.com"
+    WORKDIR "/MY PROJECT"
+    RUN touch /file1
+    RUN mkdir myfolder
+    RUN echo "hai i am adding some data in file1" > file1
+    COPY /file1 myfolder/file1
+    ADD http://dlcdn.apache.org/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz myfolder/maven
+    CMD ["yum","install","git","-y"]
+    ENTRYPOINT ["yum","install","-y"]
+    CMD ["tree"]
+```
+```
+    docker build -t image1 .
+    docker run -it --name cont1 image1 
+```
+Note: These Dockerfile actions should perform inside a container. We can check the o/p inside container.
+```
+    docker attach cont1
+```
+
+Q) Difference B/w ARG and ENV ?
+
+9. ARG 
+
+- Used to assign the values to the variables, it will not available once we build it.
+
+- In container also it's not possible to access it.
+
+Syntax: 
+```
+    ARG branch = developer
+	LABEL branch $branch
+    RUN echo "i am $branch"
+```
+Note : we can change argument values in RUNTIME/CLI
+`docker build -t <ImageName> --build-arg <var_name>=<value>`
+```
+docker build -t image1 --build-arg branch=feature
+```
+10. ENV 
+
+- ENV is used to set Environment variables.
+
+- These variables are used for inside the container.
+
+- Syntax: `ENV <key> = <value>`
+
+Note: We can't change the values in command line arguments. we need to change the ENV variable using CMD line then we have to use ARG and place ARG variable.
+```
+ARG abc=devops 
+ENV xyz=aws 
+RUN echo $abc 
+RUN echo $xyz
+```
+
+11. LABEL 
+
+- Label will reprsents the data in key-value pair
+
+- Label is used to add metadata from our image
+
+- Syntax: `LABEL branchName release`
+
+12. USER 
+
+- We can set user for an image/container
+
+- Note: After user instruction, remaining instructions will be processed with give USER
+
+
+13. EXPOSE
+
+- Expose is used to maintain the port no. of our application.
+
+- It is just like a documentation to understand container running port number.
+
+Syntax : 
+```
+    EXPOSE 8080  #For Tomcat 
+	EXPOSE 80    #For Nginx
+```
+
+
+14. VOLUME 
+
+- Used for data storage (data mount)
+
+- To create a volume folder inside container and we can create multiple Volumes.
+
+- Basically when you run the image, container will generate some data. If you kill container we will lose the data. if you want to store the data permanently. we can go for volume.
+
+- Syntax: `VOLUME /myvol`
+
+# Tasks
+
+1. Deploy a spring-boot application Using Docker Container 
+=======================================
+>> github.com/ashokitschool/spring-boot-docker-app 
+
+Docker video-4 (timelaps- 01:20)
+
+2.Dockerizing Java WEB Application
+========================
+
+Docker Video-5 (Timelaps - 4:00)
+
+
+3.Dockerizing Python flask applicatiom 
+==========================
+
+docker -5 (28:00)
+
+## Docker Volumes 
