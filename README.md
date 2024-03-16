@@ -1918,8 +1918,250 @@ Note: whenever we use this macvlan network, it is going to assign "MacAddress" f
 ================================================
 
 
-
 # Docker Swarm
 
+Docker swarm is an Orchestration tool provided by Docker software.
 
+Orchestaration means managing Processes/Containers.
+
+It is a group of services that runs the docker application.
+
+it is used to manage the containers on multiple servers.
+
+This can be implemented by the cluster.
+
+All the activities of the cluster are controlled by docker swarm manager and the machines that have joined in cluster is called swarm workers.
+
+In Simple, 
+
+Docker swarm is used to maintain the multiple containers inside one service.
+
+Each container having one service.
+
+<Swarm Image FLM>
+
+Docker swarm is used to setup Docker Cluster (Load balancing)
+
+- Cluster means group of servers used for load balancing 
+
+Docker swarm is embedded in Docker engine.
+
+- No need to install docker swarm separatley. it will install with docker.
+
+We will setup Master and Worker Nodes using docker swarm cluster.
+
+The worker nodes are connected to the Master node.
+
+Master will schedule the tasks(Container) and manage the nodes and node failures
+
+Worker nodes will perform the action (Containers will run here)
+
+Each worker node will work on an individual service for better performance
+
+### Docker Swarm Components
+
+- Service: Represents a part of the feature of an application.
+
+- Task: A single part of work
+
+- Manager: Manages the work among different nodes
+
+- Worker: Works for a specific purpose of the service.
+
+### Swarm Features
+
+1. Cluster management 
+2. Decentralise Design 
+3. Declarative Service Model 
+4. Scaling 
+5. Multi Host Network
+6. Service Discovery
+7. Load Balancing 
+8. Secure by default 
+9. Rolling Updates 
+
+
+### Docker-Swarm Setup 
+
+- Create 3 Ec2 Instances (ubuntu)
+
+Note: Enable 2377 Port for Swarm Cluster Communications
+
+>> 1-Master Node
+>> 2-Worker Nodes
+
+- Download and Install docker in Master and Worker nodes
+
+```
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    sudo sh get-docker.sh
+    sudo docker info  # we can see status of swarm : active
+```
+- Connect to Master Machine and Execute Below Command
+>> Initialising Ec2 instance as Master 
+
+```
+    sudo docker swarm init --advertise-addr <Master-Private-IP>
+```
+Now, current node is working as Manager and one token got generated.
+
+```
+    docker swarm join --token <Token_ID> 172.76.34.3:2377
+```
+- To get a Generated token for adding a worker 
+```
+    sudo docker swarm join-token worker 
+```
+>> It will generate a token for workder node, Copy Token and Execute in Worker Node Ec2 Instance
+
+If you want to Add Another Manager for High- Availability. use below command.
+
+- Generate a token for adding a manager
+```
+    sudo docker swarm join-token manager
+```
+ 
+>> It will generate a token for manager node, Copy Token and Execute in another Ec2 Instance.
+
+>>> Successfully Docker Swarm Cluster is created
+
+- To Left from Manager node & Remove worker node from manager node
+```
+    docker swarm leave 
+```
+- List of nodes 
+```
+    docker node ls 
+```
+- To remove node 
+```
+    docker node rm <node ID>
+```
+>> Must be in stopped state
+>> Delete after 10sec
+
+====> 
+
+`When we are Creating Multiple Master Nodes, we use Docker swarm manager quarm`
+
+Q) What is docker swarm manager quarm ?
+
+Ans: If we run 1 master node then we can't gaurantee High Availability for application.
+
+Formula: (n-1)/2
+
+If we take 2 Master Node
+
+2-1/2 = 0.5 (It can't become master)
+
+3-1/2 = 1 (It can be leader when the main leader is down)
+
+Note : Always use odd number for master machines when we are using Docker swarm Cluster.
+
+<<<====
+
+If we use `docker run` command then our application will executed in one container.
+
+if i run in one container. if the container fails then the application will stops.
+
+So, i want perform Orchestration for my application.
+
+By using Orchestration if the one container(replica) is fail and another container should start automatically 
+
+In Docker swarm we need to deploy our application as a service.
+
+## Docker Swarm Service
+
+Service is collection of one or more container of same image.
+
+There are 2 types of services in docker swarm 
+
+1. Replica (default mode)
+2. Global 
+
+### Working with Docker service
+
+- To run docker application as service 
+`sudo docker service create --name <serviceName> -p <hostPort>:<containerPort> <ImageName>`
+
+```
+sudo docker service create --name java-web-app -p 8080:8080 ashokit/javawebapp
+```
+Note: By default 1 replicas will be created
+
+>> Access the Application in Browser Using IP 
+
+- To check the services list 
+```
+    sudo docker service ls 
+```
+- We can scale the docker service (To Increase Replicas)
+```
+    sudo docker service scale <serviceName>=<no.of.Replicas>
+    sudo docker service scale java-web-app = 3
+```
+- Check docker service list `sudo docker service ls`
+
+Here, We can see 3/3 Replicas.
+
+- To check Service Replicas list details 
+```
+    sudo docker service ps <serviceName>
+```
+- Inspect Docker service 
+```
+    sudo docker service inspect --pretty <serviceName>
+```
+Note: Here, Inside java-web-app service 3 replicas are running
+
+>> In one node we can run multiple replicas but load will be increased. so that's why we will destribute the load by creating multiple worker nodes.
+
+Q) what heppens if the node got failed/stopped ?
+
+- Go to any Worker node and Leave From Swarm Cluster/Master Node 
+
+```
+    sudo docker swarm leave
+
+    sudo docker service ls 
+
+    sudo docker service ps <java-web-app>
+```
+Here, Automatically 4th replicas got started.
+
+Conclution:
+-----------
+- Can we say that Node failure handled by Swarm Cluster 
+
+- Can we say Swarm is managing Docker Cluster 
+
+
+Q) Create a docker service with replicas (Container)
+
+```
+docker service create --name <serviceName> --replicas 2 --publish 80:80 <imageName>
+```
+- List of Docker Swarm Commands `sudo docker swarm --help`
+
+- To Stop/Remove docker service Application `sudo docker service rm <serviceName>`
+
+- To get a particular service containers list `docker service ps <serviceName>`
+
+- To update the image for docker service `docker service update --image <imageName> <serviceName>`
+
+- To get the docker service login details `docker service log <serviceName>`
+
+#To inspect a docker service `docker service inspect <serviceName>`
+
+
+++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+FLM Video -9 
 
