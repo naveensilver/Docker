@@ -1467,7 +1467,459 @@ User Interface >>
 
 `To solve this problem "Docker Compose" came into Picture`
 
+# Docker Compose
 
+- Docker compose is tool which is used to manage (build, run and ship) multi container for applications.
+
+- It used to create a multiple containers in a single host.
+
+- Using Docker compose, we can define & deploy multi container based applications easily.
+
+- We will give input to docker compose using YAML file to manage multiple containers as a single service.
+
+- Docker compose YML file should have information related to all our service. (database, caches,webservic API..)
+
+
+### Sample Docker-Compose YML 
+
+- The Docker compose default file name : docker-compose.yml
+
+- In this Docker Compose file. we are going to specify the information about versions, services, networks and volumes, configs. 
+
+    - version : we can specify the version of docker compose file
+
+    - services : we can Specify the services of applications
+		>> Product API Image 
+		>> Cart API Image
+
+    - network : we can define the networking set-up of app.
+		>>Run the containers with Isolation
+
+    - volumes: we can define the volumes used by your applications.
+		>> Making the containers as Statefull 
+
+    - Configs: we can add external configuration to our containers. keeping configurations external will make container more generic.
+
+Note: The default path of docker compose file is `./docker-compose.yml`.
+it contains a service defination which configures each container started for that service.
+
+### Docker-Compose Commands
+
+- Create and start all the containers/services 
+```
+    docker-compose up 
+```
+- List Docker container started by docker compose 
+```
+    docker-compose ps 
+```
+- Run docker compose file 
+```
+    docker compose up -d 
+```
+- Stop and Remove all containers/services
+```
+    docker-compose down
+```
+- List of running container images
+```
+    docker-compose images
+```
+- Using different file 
+```
+    docker-compose -f <filename> up/down
+```
+
+
+### Docker Compose Set-up
+
+
+- Download Docker compose file 
+```
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+```
+
+- Give Executable Permission 
+```
+sudo chmod +x /usr/local/bin/docker-compose
+```
+- Check the Docker-compose Version 
+```
+dokcer-compose --version
+```
+=========================
+### Task-FLM-docker 7(33min) [Pending]
+
+
+### Task - Docker 6 (1:20 Time) [Pending]
+=========================================
+
+Q) Create a docker compose file for setting up dev envronment. Mysql container is linked with wordpress container.
+
+```
+    vim docker-compose.yml
+```
+```
+---
+services:
+  mydb:
+    environment:
+        .......
+	...........
+[Pending]
+```
+>> 
+
+- To start above services from yml file
+```
+    docker-compose up 
+```
+- To Access the Wordpress site
+
+>> VM_Public_IP: 9090   (Make sure 9090 port enable in Security Group)
+
+- To Stop the both container at a time 
+```
+    docker-compose stop 
+```
+- To run the container in detached mode. 
+```
+    docker-compose up -d   
+```
+- To remove all the container
+```
+    docker rm -f $(docker ps -aq)
+```
+
+- To stop and delete the container 
+```
+    docker-compose down
+```
+We got lot of logs coming on the screen. To avoid it we use '-d' option.
+```
+    docker-compose stop
+```
+- To get Docker compose log info 
+```
+    docker-compose logs
+```
+- To get the docker compose contaiers
+```
+    docker-compose ps 
+```
+
+<Class-7>
+
+Task:
+------
+
+Deploying Spring boot app with MySql DB using docker compose
+
+    Spring boot app ==> 1 container 
+
+    MySql DB ==> 1 container
+
+>>>>
+
+1. To run Spring Boot App. We will use below Dockerfile
+```
+FROM openjdk:jdk1.8
+
+COPY target/sb-app.jar  /usr/local/sb-app.jar
+
+WORKDIR /usr/local/
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "sb-app.jar"]
+```
+
+2. If we are using MySQL DB in Spring Boot App then we need to MySQL DB in Container.
+
+So here we need two containers. i.e Spring boot container and MySql DB container.
+
+In future, we may have multiple containers. So, managing multiple container manually is a difficult process. 
+
+Note: Instead of managing two containers separatley we can use Docker Compose.
+
+Docker Compose Configuration :
+```
+    docker-compose.yml 
+```
+```
+version : '3'
+
+services :
+
+  boot-app:                                    # boot app as one container 
+	image: sb-rest-api
+	ports:
+	- "8080" : 8080
+	depends_on:
+	- mysql-db
+ 
+  mysql-db:                                    #mysql-db as another container
+	image: mysql:8
+	environment:
+	- MYSQL_ROOT_PASSWORD  = root       #we can set any password
+	- MYSQL_DATABASE = bootdb 
+ 
+```
+=========> Later 
+
+# Docker Network
+
+- Docker Networking is all about communication among processes (Communication from one container to another container using networking)
+
+- Docker Network enables a user to link docker container to as many networks as they required.
+
+- Docker network is used to provide complete isolation/IP Address for Docker container
+
+### Advantages Of docker Networking
+
+1) They share single operating system and maintain containers in isolated manner.
+
+2) It requires fewer OS instance to run the workload.
+
+3) It helps in fast delivery of the software.
+
+4) It helps in application Portability.
+
+`Scenario,`
+
+When Docker installed in a machine by default 3 docker network drivers will be configured.
+
+	1. None
+	2. Host 
+	3. Bridge
+
+Note: One container, we can attach to multiple networks
+
+- when container is attached to multiple networks then those containers can communicate.
+
+- Docker providing networking to containers using network drivers.
+
+### Docker Network Drivers
+
+1. Bridge Driver
+2. Host 
+3. None 
+4. Overlay
+5. Macvlan
+
+-----
+
+1. Bridge : This is the default network driver created on the Docker host machine.
+
+Note : Bridge Network driver are very useful when application running in standalone container(Only one container).
+
+We can see more details about bridge driver using below command 
+```
+docker network inspect bridge
+```
+2. Host Driver : It is useful when standalone container is available.
+
+The container will not get any IP address when we enable Host Driver.
+
+Note: For example a container is executed that binds to port 80 with host network driver. In this case, we no need to map container port to host machine port.
+
+This is useful when we are running our container with large no.of ports.
+
+3. None Driver (null)
+
+In this type of network, the containers will have no access to network.
+
+4. Overlay Driver
+
+We will use docker swarm to orchestrate our Docker Containers 
+
+Overlay Driver will be used when we have Docker Swarm Cluster.
+
+5. MacvLan Driver
+
+This network Driver will assign a MAC address to a container
+
+MAC address will make our device as Physical 
+
+Using this MAC address Docker engine routes the traffic to Particular Route.
+
+Macvlan driver simplifies communication between container
+
+### Working With Docker Networking Commands
+
+- To list all the network 
+```
+    docker network ls 
+```
+- Running docker container with default network 
+```
+    docker run --name nginx -d -p 80:80 nginx 
+```
+
+- if you inspect Nginx Image (By default bridge network available)
+```
+    docker inspect nginx 
+```
+- To Remove docker network 
+```
+    docker network rm <network-id>
+```
+- To remove unused networks at a time 
+```
+    docker network prune
+```
+- Creating our own bridge network
+``` 
+    docker network create --driver bridge <network-name>
+```
+Note : If we don't specify driver then by default it will take bridge driver.
+
+- Run the docker container using custom network which we have created
+```
+    docker run --name cont1 -d --network my-network -p 7070:80 nginx
+```
+- To check the containers attached to my-network 
+```
+    docker network inspect my-network
+```
+========================= `Exercise` ========================
+
+1. Running Container Using Bridge Network Driver
+================================================
+
+Now i want to check commununication between containers is happening or not ?
+
+First i will create two containers using nginx image 
+
+	>> nginx1
+    
+	>> nginx2
+
+Both containers will be attached to single network (i.e my-network)
+
+After attaching to single network, then i want to ping one container from another container.
+
+If we are able to ping from one container to another container. then network is success.
+
+>> Process
+
+- Pulling base image from Docker Hub 
+```
+    docker pull nginx
+```
+- Running 2 Docker containers using My-network and check connectivity b/w 2 container using ping command.
+```
+    docker run --name nginx1 -d --network my-network -p 8080:80 nginx
+
+    docker run --name nginx2 -d --network my-network -p 9090:80 nginx
+```
+- Get IP address of docker container 
+```
+    docker inspect -f '{{range.NetworkSettings.Networks}} {{.IPAddress}} {{end}}' <cont-id/cont-name>
+```
+>> nginx1 Container IP : 172.19.0.1
+>> nginx2 Container IP : 170.19.0.2
+
+- Connect to Nginx1 Container and Ping Nginx2 Container IP
+```
+    docker exec -it nginx1 /bin/bash
+```
+Note: Here, we need to install Ping package
+```
+    apt-get update
+    apt-get install iputils-ping
+```
+```
+    ping 172.19.0.2
+```
+Now, Exit from nginx1 Container `exit` 
+
+- Connect to Nginx2 Container and Ping Nginx1 Container IP
+```
+    docker exec -it nginx2 /bin/bash
+    apt-get update
+    apt-get install iputils-ping
+    ping 172.19.0.1
+```
+2. Running Container Using Host Network Driver
+==============================================
+
+- When we use Host network driver, port mapping is not required.
+
+```
+    docker run --name nginx3 --network host -d nginx
+```
+- Access with Host IP in browser
+
+>> Welcome To Nginx 
+
+Note: We are running nginx container without port mapping because we are using Host Network driver.
+
+3. Running a Container using Macvlan Network Driver
+====================================================
+
+In docker, a common question that usually comes up is 'how do i expose my containers directly to my local physical network?' This is especially so when you are running monitoring aplications that are collecting network statistics and want to connect container legacy applications. a possible solution to this question is to create and implement the macvlan network type.
+
+Macvlan networks are special virtual network that allow you to create "clone" of the physical network interface attached to your Linux servers and attach containers directly your Lan. To ensure this happens, simple designate a physical network interface on your server to a macvlan network which has its own subnet and gateways.
+
+
+- To check list of network drivers `docker network ls`
+
+- Get IP address of Docker Host Machine `ifconfig`
+
+Note: Take IP Address From `eth0` (Subnet & Gateway)
+
+>> inet : 172.31.13.126
+
+Depending on inet we will take Subnet and gate way as 
+
+- Subnet : 172.31.13.0/24
+
+- Gate Way : 172.31.13.1 
+
+Note: AWS Always use '1' as a Gate Way IP
+
+- Create Macvlan network using subnet and gateway
+```
+    docker network create -d macvlan \
+	--subnet=172.31.13.0/24 \
+	--gateway=172.31.13.1 \
+	-o parent=eth0 \
+	my-macvlan
+```
+- Check list of network drivers `docker network ls`
+
+- To inspect network drivers
+```
+    docker network inspect <network-id/network-name>
+```
+If you inspect, there is no container is attached to this network.
+
+- Now Run docker container using macvlan network that we have created
+```
+    docker run --rm -itd \
+    --network=my-macvlan \
+    --ip=172.31.13.110 \
+    alpine:latest \
+    /bin/bash
+```
+- Now Inspect the created Macvlan Network
+``` 
+    docker network inspect <my-macvlan/network-id>
+```
+In Inspect, one container is attached to Macvlan network.
+
+Note: whenever we use this macvlan network, it is going to assign "MacAddress" for our container.
+
+4. None driver : Nothing will be used (No network available)
+===========================================================
+
+5. Overlay Driver : Used in docker Swarm Concept 
+================================================
+
+
+
+# Docker Swarm
 
 
 
