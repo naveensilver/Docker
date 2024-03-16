@@ -985,20 +985,22 @@ Syntax :
 # Tasks
 
 1. Deploy a spring-boot application Using Docker Container 
-=======================================
->> github.com/ashokitschool/spring-boot-docker-app 
+==========================================================
 
-Docker video-4 (timelaps- 01:20)
+- github.com/ashokitschool/spring-boot-docker-app 
+
+- Docker video-4 (timelaps- 01:20) [Pending]
 
 2.Dockerizing Java WEB Application
-========================
+==================================
 
-Docker Video-5 (Timelaps - 4:00)
-
+- Docker Video-5 (Timelaps - 4:00) [Pending]
 
 3.Dockerizing Python flask applicatiom 
-==========================
+======================================
 
-docker -5 (28:00)
+- Docker -5 (28:00) [Pending]
 
-## Docker Volumes 
+## Docker Volumes
+
+
