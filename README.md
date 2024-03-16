@@ -593,10 +593,25 @@ Q) How to Connect and login Docker-Hub
 ```
     docker login 
 ```
-Now Enter Docker Hub Username & Password.
+Now, Enter Docker Hub Username & Password.
 
 Note: The Password stored Unencrypted in /home/ec2-user/.docker/config.json
 
+Q) How to push Images to Docker Hub
+
+- First TAG the image 
+```
+ docker tag <local-image:tagname> <DockerHub_UserName>/<Repo_Name>:<TagName>
+```
+- Push the Image `docker push <DockerHub_UserName>/<Repo_Name>:tagName`
+
+```
+    docker push naveensilver/repo-1:version1
+```
+
+Note: We can't push Multiple Image at a time. Each Repo is having only one image. If you push new image in same repo, old image will be deleted.
+
+Using `docker pull naveensilver/repo-1:version1` can get image from docker registry.
 
 # Docker File 
 
@@ -1669,11 +1684,18 @@ services :
 
 # Docker Network
 
-- Docker Networking is all about communication among processes (Communication from one container to another container using networking)
+- Docker Networking is all about communication among processes.(Communication from one container to another container using networking)
+
+- Docket network allows containers to connect to each other and to external networks such as the host network or the internet.
 
 - Docker Network enables a user to link docker container to as many networks as they required.
 
 - Docker network is used to provide complete isolation/IP Address for Docker container
+
+- It allows you to attach your container into many networks
+
+![Docker-Networks](https://github.com/naveensilver/Docker/assets/120022254/8cd42d02-deff-4944-9477-98544e09f4bf)
+
 
 ### Advantages Of docker Networking
 
@@ -1711,7 +1733,7 @@ Note: One container, we can attach to multiple networks
 
 1. Bridge : This is the default network driver created on the Docker host machine.
 
-Note : Bridge Network driver are very useful when application running in standalone container(Only one container).
+Note: Bridge Network driver are very useful when application running in standalone container(Only one container).
 
 We can see more details about bridge driver using below command 
 ```
@@ -1764,7 +1786,7 @@ Macvlan driver simplifies communication between container
 ```
     docker network rm <network-id>
 ```
-- To remove unused networks at a time 
+- To remove unused networks ALL at a time 
 ```
     docker network prune
 ```
@@ -1801,7 +1823,7 @@ After attaching to single network, then i want to ping one container from anothe
 
 If we are able to ping from one container to another container. then network is success.
 
->> Process
+>> Process:
 
 - Pulling base image from Docker Hub 
 ```
