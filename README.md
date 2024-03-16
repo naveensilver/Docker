@@ -2154,14 +2154,161 @@ docker service create --name <serviceName> --replicas 2 --publish 80:80 <imageNa
 #To inspect a docker service `docker service inspect <serviceName>`
 
 
-++++++++++++++++++++++++++++++++++++++++++++
+## Docker-Compose Container Load Balancing Concept 
+
+<FLM Video -9>
+
+Multiple Container in Single Server we use Docker-Compose 
+
+- Install docker in instance 
+
+- lets assume 2 services 
+```
+mkdir swiggy zomato 
+```
+- Go to Swiggy and Create a Docker file  
+```
+    cd swiggy     # service 1
+    vim Dockerfile 
+```
+```
+FROM nginx 
+COPY . /usr/share/nginx/html/
+```
+:wq
+
+- Create index.html file with code `vim index.html` 
+```	
+    <h1> This is app1 </h1>
+```
+:wq
+
+- Now Build the image `$ docker build -t image1 .`
+
+cd ..
+
+Now, Go To another service and Create Dockerfile
+```
+cd zomato           # service-2
+vim Dockerfile 
+```
+```
+FROM nginx 
+COPY . /usr/share/nginx/html/
+```
+:wq
+```
+vim index.html 
+```
+```	
+    <h1> This is app2 </h1>
+```
+:wq
+
+- Now Build the image `$ docker build -t image2 .`
+
+cd ..
+
+We have 2 images.
+
+We need to configure the balancing in nginx 
+
+$ mkdir nginx # Creating another service for Load balancing 
+
+$ cd nginx 
+
+$ vim nginx.conf
+
+```
+upstream loadbalancer {
+		server 172.17.0.1:5000 weight=6; #60% load 
+		server 172.17.0.1:5001 weight=4; #40% load
+}
+
+server {
+		location / {
+				proxy_pass http://loadbalancer;
+		}}
+```
+:wq
+
+$ vim Dockerfile 
+
+```
+    FROM nginx 
+    RUN rm /etc/nginx/conf.d/default.conf   # To remove default nginx config file
+    COPY nginx.conf /etc/nginx/conf.d/default.conf # Copy our nginx config file
+```
+:wq
+
+$ cd ..
+
+Now, Create Docker compose file 
+
+Install docker-compose 
+
+$ vim docker-compose.yml 
+
+```
+version: "3"
+services:
+	swiggy:
+		image: image1
+		ports:
+			- "5000:80"
+
+	zomato:
+		image: image2
+		ports:
+			- "5001:80"
+
+	nginx:
+		build: ./nginx
+		ports:
+			- "8080:80"
+		depends_on:
+			- swiggy 
+			- zomato 
+```
+:wq
+
+$ docker-compose up -d
+
+$ docker ps # All container up state 
+
+Now access application using instance public_id:8080
+
+If you refresh, The request will be switched one after another.
+
+Task: add another service and access in browser ex: uber 
+
+		
+
+----------------------------
+
+
+## Docker Commands:
+
+- How to change Docker file name 
+ 
+```
+    mv Dockerfile Dockerfile_one
+```
+- Creating Docker image using Dockerfile_one
+```
+    docker build -f Dockerfile_one -t image2 .
+```
+Here, `-f `: file name | `-t` : image name 
+
+--------------------
+
+
+`Image:` image is a package which contains the application along with required dependencies (code, softwares, libraries,... )to run the application  
+
+
+Creating container nothing but application execution.
 
 
 
 
-
-
-
-++++++++++++++++++++++++++++++++++++++++++++++++
-FLM Video -9 
 
