@@ -95,7 +95,7 @@
 
 ## Virtualisation | Virtualisation - Architecure :
 
-![image](https://github.com/naveensilver/Docker/assets/120022254/295f0631-3b24-47f2-9a5d-fd388f30a31c)
+![image](https://github.com/naveensilver/Docker/assets/120022254/3c17c3e7-0dfe-49b7-9fbf-911f19f8545d)
 
 - Installing multiple Guest OS in one Host OS is called Virtualisation.
 
@@ -129,7 +129,7 @@
 
 ## Containerisation | Containerisation - Architecure :
 
-![image](https://github.com/naveensilver/Docker/assets/120022254/b1c14ca7-27b2-43d6-8b4f-fecab691d59b)
+![image](https://github.com/naveensilver/Docker/assets/120022254/0fc2bb25-366d-4789-8928-72144b96c5f0)
 
 - Instead of installing multiple VM on host OS. we will use Containerisation.
 
