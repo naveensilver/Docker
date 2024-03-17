@@ -360,8 +360,49 @@ Run command `$ exit` #Exit from the session
 
 Then press 'R' to restart the session (MobaXterm)
 
-Q) Execute Hello-World Image (Or) Create image and Container using Docker Commands:
-------------------------------------------------------------------------------------
+Tasks
+=====
+
+### Build your First Docker Image
+
+Q) Deploying Python Code Hello-World Application 
+--------------------------------------------------
+
+- Get the source code from GitHub 
+```
+https://github.com/naveensilver/Docker.git
+```
+Now, Go to Directory where our Dockerfile and app.py directory present.
+
+Note: We need to run the docker commands where the docker file is present.
+
+- Now, Execute the Dockerfile using `docker build` 
+
+```
+docker build -t naveensilver/my-first-docker-image:latest .
+```
+It will create a image name called `naveensilver/my-first-docker-image:latest` and Check the images list `docker images`
+
+- Now Run the image or Create Container using this Image
+```
+docker run -it naveensilver/my-first-docker-image:latest
+```
+It shows "Hello World" and docker container created we can check the container list `docker ps -a`
+
+- Now, Push the Image in Docker Registry. For that we have to login docker hub from cli.
+```
+docker login
+```
+Enter Docker Hub User name:  and Password: 
+
+- Now, Push the image using 
+```
+docker push naveensilver/my-first-docker-image:latest
+```
+It will generate a `Sha_ID` and Image got pushed. Go and Check in Docker Hub
+
+Q) How to get the image from Docker Hub
+---------------------------------------
 
 - Check the docker info `$ docker info`
 
@@ -372,7 +413,7 @@ Q) Execute Hello-World Image (Or) Create image and Container using Docker Comman
 
 - To see list of docker images `$ docker images `
 
-- To run docker image `$ docker run <image-id/name>` i.e., `$ docker run hello-world `
+- To run docker image `$ docker run <image-id/name>` i.e., `$ docker run hello-world`
 
 > hello world image got executed and created a new container.
 
@@ -1015,6 +1056,10 @@ Syntax :
 ======================================
 
 - Docker -5 (28:00) [Pending]
+
+4. Docker Containerization for Django 
+
+- Abhishek.veeramalla@Youtube [Day-25]  [https://youtu.be/3IAvr_O6vao?si=OCy7xLAWeoe_E96p]
 
 # Docker Volumes
 
