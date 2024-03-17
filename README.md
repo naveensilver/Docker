@@ -164,7 +164,7 @@ Containers and virtual machines are both technologies used to isolate applicatio
 
     3. Security: VMs provide a higher level of security as each VM has its own operating system and can be isolated from the host and other VMs. Containers provide less isolation, as they share the host operating system.
     
-    4.  Management: Managing containers is typically easier than managing VMs, as containers are designed to be lightweight and fast-moving.
+    4. Management: Managing containers is typically easier than managing VMs, as containers are designed to be lightweight and fast-moving.
 
 
 ## Why are containers light weight ?
@@ -272,11 +272,11 @@ The architecture of Docker consists of several components that work together to 
 
 2.	Docker Host: It is machine where we installed docker engine/docker
 
-- `Docker daemon:` The Docker daemon is the core component of Docker architecture. Daemon runs on the host operating system and manages all the containers, images, networks, and volumes on the Docker host. Daemon is also called as Docker Engine.
+- `Docker daemon:` The Docker daemon (Dockerd) is the core component of Docker architecture. Daemon runs on the host operating system and manages all the containers, images, networks, and volumes on the Docker host. Daemon is also called as Docker Engine.
 
     - `Docker images:` Docker image is a package which contains everything needed to run an application. Which includes App code, Dependencies/Software, Libraries, Env, configuration files.
 
-    - `Docker containers:` Docker containers are the runtime instances of Docker images. They are isolated environments that run the application and its dependencies. Multiple containers can run on the same host, each with its own isolated environment.
+    - `Docker containers:` Docker containers are the runtime instances of Docker images. They are isolated environments that run the application and its dependencies. Multiple containers can run on the same host, each container with its own isolated environment.
 
     - `Docker networks:` Docker networks are used to connect multiple containers together, enabling communication between them.
 
@@ -389,15 +389,15 @@ Q) How This Docker image got executed
 
 4. The Container application provides infomation to docker engine, The docker engine/daemon sent the output to docker client in the terminal (CLI)
 
-# Docker File Architecture | Docker Architecture:
+# Docker File Architecture | Docker Life Cycle:
 
 ![Screenshot (103)](https://github.com/naveensilver/Docker/assets/120022254/9abd688c-6ed9-41ed-bd88-a21cb932ecc1)
 
 There are three important things,
 
-1. docker build -> builds docker images from Dockerfile
-2. docker run   -> runs container from docker images
-3. docker push  -> push the container image to public/private regestries to share the docker images.
+1. docker build - builds docker images from Dockerfile
+2. docker run   - runs container from docker images
+3. docker push  - push the container image to public/private regestries to share the docker images.
 
 Q) Diff b/w Docker Run & Docker Pull 
 ------------------------------------
@@ -427,9 +427,6 @@ Q) Diff b/w Docker Run & Docker Pull
 - Docker pull is used to get image from docker hub.
 
 - Syntax : ``` docker pull [imageName] ```
-
-## Docker Build [Pending]
-
 
 # Image And Containers
 
@@ -481,6 +478,9 @@ Note : we can't remove running containers
 # Docker Image Commands:
 
 # Docker Container Commands
+
+Tasks:
+======
 
 Q) How to create a Image from Container?
 
@@ -587,7 +587,7 @@ Q) How to Create Docker Hub
 
 - Create Account
 
-Q) How to Connect and login Docker-Hub 
+Q) How to Connect and login Docker-Hub from CLI ?
 
 - Run the command in CLI 
 ```
