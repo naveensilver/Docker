@@ -40,7 +40,7 @@
 
 - It was initially released in march 2013 and developed by Solomon-Hykes and Sebastian Pahl.
 
-- Docker is set of Platform as a service that use OS level virtualisation, whereas VM ware uses hard-ware level virtualisation.
+- Docker is set of Platform as a service(PAAS) that use OS level virtualisation, whereas VM ware uses hard-ware level virtualisation.
 
 - The Main advantage of docker methodologies is shipping, testing and deploying code quickly. so, we can eliminate the differences between development and production environments.
 
@@ -1745,7 +1745,7 @@ services :
 
 - Docker Networking is all about communication among processes.(Communication from one container to another container using networking)
 
-- Docket network allows containers to connect to each other and to external networks such as the host network or the internet.
+- Docket network allows containers to connect/communicate with each other and to external networks such as the host network or the internet.
 
 - Docker Network enables a user to link docker container to as many networks as they required.
 
@@ -1809,6 +1809,8 @@ This is useful when we are running our container with large no.of ports.
 3. None Driver (null)
 
 In this type of network, the containers will have no access to network.
+
+The None driver simply disable networking for a container, making it isonlate from other containers.
 
 4. Overlay Driver
 
@@ -1895,6 +1897,11 @@ If we are able to ping from one container to another container. then network is 
     docker run --name nginx2 -d --network my-network -p 9090:80 nginx
 ```
 - Get IP address of docker container 
+
+```
+    docker inspect <ContainerName>
+```
+Here, Check Ip address of conatiner and it is a Bridge network
 ```
     docker inspect -f '{{range.NetworkSettings.Networks}} {{.IPAddress}} {{end}}' <cont-id/cont-name>
 ```
@@ -1909,10 +1916,13 @@ Note: Here, we need to install Ping package
 ```
     apt-get update
     apt-get install iputils-ping
+    ping -V
 ```
 ```
     ping 172.19.0.2
 ```
+Ping is successfull means Nginx1 container attached to Nginx2 container
+
 Now, Exit from nginx1 Container `exit` 
 
 - Connect to Nginx2 Container and Ping Nginx1 Container IP
@@ -1922,15 +1932,179 @@ Now, Exit from nginx1 Container `exit`
     apt-get install iputils-ping
     ping 172.19.0.1
 ```
+Here, Ping Success means Communication between containers is Happening 
+
+Q) How can you secure your container/app Using Concept of networking 
+
+- Using Bridge Networking
+
+Case-1) Container-1 should communicate with Container-2
+Case-2) Container-3 should not communicate with Conatiner-1 and 2 [Isolation]
+
+Case-1) 
+
+- Here, I am Creating a container-1 as `login` and Container-2 as `logout` using nginx image
+
+```
+    docker run -d --name login nginx
+    docker run -d --name logout nginx
+```
+- Lets understand the Ip address of both the container `docker inspect <ContainerName>` and Default Network
+
+Now, Inspect `login` container 
+```
+    docker inspect login
+```
+```
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "422bbb8272dff0d84e8ef515aebbe2420507c712d561c1e94ad08d130bfda1ab",
+                    "EndpointID": "6b5a276ed6a69119c6ae740596a12ba982acf7c6e5b0e82d3ff309feea49f226",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null
+                }
+```
+Here, we can see default netwrok `bridge` and Ip Address of login `172.17.0.2`
+
+Now, Inspect `logout` container
+```
+    docker inspect logout
+```
+```
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "422bbb8272dff0d84e8ef515aebbe2420507c712d561c1e94ad08d130bfda1ab",
+                    "EndpointID": "5b018ca41cfd184798e0c0645dd326ec769699e9029eb1bd420f564b918ace8c",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.3",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:03",
+                    "DriverOpts": null
+```
+Here, we can see default netwrok `bridge` and Ip Address of login `172.17.0.3`
+
+- Now, Entering into container and try to communicate with other container using `ping`
+
+```
+    docker exec -it login /bin/bash
+```
+By default ping package is not available for that we have to install ping.
+
+```
+    apt-get update                       #ubuntu
+    apt-get install iputils-ping
+    ping -V
+```
+- Now, We are inside `login` Container and Try to Ping with logout container using `ping <logout_IP_Address>`
+
+```
+    ping 172.17.0.3
+```
+Here, ping got success means One container can access the another container which is on Same Host. Case-1 is Working.
+
+Case-2) Container-3 should not communicate with Conatiner-1 and 2 [Isolation]
+
+Now, I want to create a Conatiner-3 as `finance`. This Container-3 has to `logically Isolated` from cont-1 and conat-2. Why because i want my `finance` container more Secure.
+
+- For that, i am creating custom network i.e., bridge network 
+```
+    docker network create <networkName>
+    docker network create secure_bridge
+```
+- check, the list of docker network 
+```
+    docker network ls
+```
+Here, we can see newly created `secure_network` as `bridge` driver
+
+- Now, try to assign this `secure_network` to `finance` container and let us see if the `login` and `logout` container can talk to `finance` container or not and my expectation would be, They should not be able to communicate with each-other because `finance` cont has some sensitive information and i want to keep this container secure.
+
+```
+    docker run -d --name finance --network secure_bridge nginx
+```
+- Now, Check the Containers list 
+```
+docker ps
+``` 
+Here, we can see `login`,`logout` and `finance` container
+
+- Now, Inspect `finance` container
+```
+    docker inspect finance
+```
+```
+            "Networks": {
+                "secure_bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": [
+                        "4b971120f45c"
+                    ],
+                    "NetworkID": "b9d3f2bd85afe87698075ddb84d157dd4309903d2334f11f5a408bb9c72bca33",
+                    "EndpointID": "4b445bc79061524584cea2ee46f4ffa887b0fd31b5f3ff866a3649f1a66172eb",
+                    "Gateway": "172.18.0.1",
+                    "IPAddress": "172.18.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:12:00:02",
+                    "DriverOpts": null
+```
+Here, we can see custom netwrok `secure_bridge` and Ip Address of login `172.18.0.2`
+
+- Copy the Ip_Address of Finance and try to ping it from `login` and `logout` container and you will not able to communicate with `finance`
+
+So, `login` and `logout` containers by default 'BRIDGE NETWORK'. So, they were able to communicate with each other. Where as the `finance` container is with custom 'secure network' that we have created. It is completely isolated. this is how you will make your container secure using the concept of Netwroking.
+
 2. Running Container Using Host Network Driver
 ==============================================
 
 - When we use Host network driver, port mapping is not required.
 
 ```
-    docker run --name nginx3 --network host -d nginx
+    docker run -d --name demo_host --network host nginx
 ```
-- Access with Host IP in browser
+- Inspect the container 
+```
+    docker inspect demo_host
+```
+
+```
+            "Networks": {
+                "host": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "bb6afdabb370c698ec6404cff82aaec047f04c9476facf4b6ca1403997e600eb",
+                    "EndpointID": "e8ba5becc6f070ffc54423ed6f0a6923d23d18c4c408ef354d47b348a4f76896",
+                    "Gateway": "",
+                    "IPAddress": "",
+                    "IPPrefixLen": 0,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "",
+                    "DriverOpts": null
+```
+There is No Ip_Address available because we are Using Host Network
+
+- We can Access it with Host_IP in browser. 54.91.134.194
 
 >> Welcome To Nginx 
 
