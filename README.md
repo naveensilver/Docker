@@ -1497,9 +1497,441 @@ Two way to store the data by mounting the volume
 	1. Volume Mount 
 	2. Binded Mount Volume
 
+# Docker Network
+
+- Docker Networking is all about communication among processes.(Communication from one container to another container using networking)
+
+- Docket network allows containers to connect/communicate with each other and to external networks such as the host network or the internet.
+
+- Docker Network enables a user to link docker container to as many networks as they required.
+
+- Docker network is used to provide complete isolation/IP Address for Docker container
+
+- It allows you to attach your container into many networks
+
+![Docker-Networks](https://github.com/naveensilver/Docker/assets/120022254/8cd42d02-deff-4944-9477-98544e09f4bf)
+
+
+### Advantages Of docker Networking
+
+1) They share single operating system and maintain containers in isolated manner.
+
+2) It requires fewer OS instance to run the workload.
+
+3) It helps in fast delivery of the software.
+
+4) It helps in application Portability.
+
+`Scenario,`
+
+When Docker installed in a machine by default 3 docker network drivers will be configured.
+
+	1. None
+	2. Host 
+	3. Bridge
+
+Note: One container, we can attach to multiple networks
+
+- when container is attached to multiple networks then those containers can communicate.
+
+- Docker providing networking to containers using network drivers.
+
+### Docker Network Drivers
+
+1. Bridge Driver
+2. Host 
+3. None 
+4. Overlay
+5. Macvlan
+
+-----
+
+1. Bridge : This is the default network driver created on the Docker host machine.
+
+Note: Bridge Network driver are very useful when application running in standalone container(Only one container).
+
+We can see more details about bridge driver using below command 
+```
+docker network inspect bridge
+```
+2. Host Driver : It is useful when standalone container is available.
+
+The container will not get any IP address when we enable Host Driver.
+
+Note: For example a container is executed that binds to port 80 with host network driver. In this case, we no need to map container port to host machine port.
+
+This is useful when we are running our container with large no.of ports.
+
+3. None Driver (null)
+
+In this type of network, the containers will have no access to network.
+
+The None driver simply disable networking for a container, making it isonlate from other containers.
+
+4. Overlay Driver
+
+We will use docker swarm to orchestrate our Docker Containers 
+
+Overlay Driver will be used when we have Docker Swarm Cluster.
+
+5. MacvLan Driver
+
+This network Driver will assign a MAC address to a container
+
+MAC address will make our device as Physical 
+
+Using this MAC address Docker engine routes the traffic to Particular Route.
+
+Macvlan driver simplifies communication between container
+
+### Working With Docker Networking Commands
+
+- To list all the network 
+```
+    docker network ls 
+```
+- Running docker container with default network 
+```
+    docker run --name nginx -d -p 80:80 nginx 
+```
+
+- if you inspect Nginx Image (By default bridge network available)
+```
+    docker inspect nginx 
+```
+- To Remove docker network 
+```
+    docker network rm <network-id>
+```
+- To remove unused networks ALL at a time 
+```
+    docker network prune
+```
+- Creating our own bridge network
+``` 
+    docker network create --driver bridge <network-name>
+```
+Note : If we don't specify driver then by default it will take bridge driver.
+
+- Run the docker container using custom network which we have created
+```
+    docker run --name cont1 -d --network my-network -p 7070:80 nginx
+```
+- To check the containers attached to my-network 
+```
+    docker network inspect my-network
+```
+========================= `Exercise` ========================
+
+1. Running Container Using Bridge Network Driver
+================================================
+
+Now i want to check commununication between containers is happening or not ?
+
+First i will create two containers using nginx image 
+
+	>> nginx1
+    
+	>> nginx2
+
+Both containers will be attached to single network (i.e my-network)
+
+After attaching to single network, then i want to ping one container from another container.
+
+If we are able to ping from one container to another container. then network is success.
+
+>> Process:
+
+- Pulling base image from Docker Hub 
+```
+    docker pull nginx
+```
+- Running 2 Docker containers using My-network and check connectivity b/w 2 container using ping command.
+```
+    docker run --name nginx1 -d --network my-network -p 8080:80 nginx
+
+    docker run --name nginx2 -d --network my-network -p 9090:80 nginx
+```
+- Get IP address of docker container 
+
+```
+    docker inspect <ContainerName>
+```
+Here, Check Ip address of conatiner and it is a Bridge network
+```
+    docker inspect -f '{{range.NetworkSettings.Networks}} {{.IPAddress}} {{end}}' <cont-id/cont-name>
+```
+>> nginx1 Container IP : 172.19.0.1
+>> nginx2 Container IP : 170.19.0.2
+
+- Connect to Nginx1 Container and Ping Nginx2 Container IP
+```
+    docker exec -it nginx1 /bin/bash
+```
+Note: Here, we need to install Ping package
+```
+    apt-get update
+    apt-get install iputils-ping
+    ping -V
+```
+```
+    ping 172.19.0.2
+```
+Ping is successfull means Nginx1 container attached to Nginx2 container
+
+Now, Exit from nginx1 Container `exit` 
+
+- Connect to Nginx2 Container and Ping Nginx1 Container IP
+```
+    docker exec -it nginx2 /bin/bash
+    apt-get update
+    apt-get install iputils-ping
+    ping 172.19.0.1
+```
+Here, Ping Success means Communication between containers is Happening 
+
+Q) How can you secure your container/app Using Concept of networking 
+
+- Using Bridge Networking
+
+Case-1) Container-1 should communicate with Container-2
+
+Case-2) Container-3 should not communicate with Conatiner-1 and 2 [Isolation]
+
+![image](https://github.com/naveensilver/Docker/assets/120022254/6f57d8fa-1677-462f-b1a1-853312058ef2)
+
+Case-1) Container-1 should communicate with Container-2
+
+- Here, I am Creating a container-1 as `login` and Container-2 as `logout` using nginx image
+
+```
+    docker run -d --name login nginx
+    docker run -d --name logout nginx
+```
+- Lets understand the Ip address of both the container `docker inspect <ContainerName>` and Default Network
+
+Now, Inspect `login` container 
+```
+    docker inspect login
+```
+```
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "422bbb8272dff0d84e8ef515aebbe2420507c712d561c1e94ad08d130bfda1ab",
+                    "EndpointID": "6b5a276ed6a69119c6ae740596a12ba982acf7c6e5b0e82d3ff309feea49f226",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02",
+                    "DriverOpts": null
+                }
+```
+Here, we can see default netwrok `bridge` and Ip Address of login `172.17.0.2`
+
+Now, Inspect `logout` container
+```
+    docker inspect logout
+```
+```
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "422bbb8272dff0d84e8ef515aebbe2420507c712d561c1e94ad08d130bfda1ab",
+                    "EndpointID": "5b018ca41cfd184798e0c0645dd326ec769699e9029eb1bd420f564b918ace8c",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.3",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:03",
+                    "DriverOpts": null
+```
+Here, we can see default netwrok `bridge` and Ip Address of login `172.17.0.3`
+
+- Now, Entering into container and try to communicate with other container using `ping`
+
+```
+    docker exec -it login /bin/bash
+```
+By default ping package is not available for that we have to install ping.
+
+```
+    apt-get update                       #ubuntu
+    apt-get install iputils-ping
+    ping -V
+```
+- Now, We are inside `login` Container and Try to Ping with logout container using `ping <logout_IP_Address>`
+
+```
+    ping 172.17.0.3
+```
+Here, ping got success means One container can access the another container which is on Same Host. Case-1 is Working.
+
+Case-2) Container-3 should not communicate with Conatiner-1 and 2 [Isolation]
+
+Now, I want to create a Conatiner-3 as `finance`. This Container-3 has to `logically Isolated` from cont-1 and conat-2. Why because i want my `finance` container more Secure.
+
+- For that, i am creating custom network i.e., bridge network 
+```
+    docker network create <networkName>
+    docker network create secure_bridge
+```
+- check, the list of docker network 
+```
+    docker network ls
+```
+Here, we can see newly created `secure_network` as `bridge` driver
+
+- Now, try to assign this `secure_network` to `finance` container and let us see if the `login` and `logout` container can talk to `finance` container or not and my expectation would be, They should not be able to communicate with each-other because `finance` cont has some sensitive information and i want to keep this container secure.
+
+```
+    docker run -d --name finance --network secure_bridge nginx
+```
+- Now, Check the Containers list 
+```
+docker ps
+``` 
+Here, we can see `login`,`logout` and `finance` container
+
+- Now, Inspect `finance` container
+```
+    docker inspect finance
+```
+```
+            "Networks": {
+                "secure_bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": [
+                        "4b971120f45c"
+                    ],
+                    "NetworkID": "b9d3f2bd85afe87698075ddb84d157dd4309903d2334f11f5a408bb9c72bca33",
+                    "EndpointID": "4b445bc79061524584cea2ee46f4ffa887b0fd31b5f3ff866a3649f1a66172eb",
+                    "Gateway": "172.18.0.1",
+                    "IPAddress": "172.18.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:12:00:02",
+                    "DriverOpts": null
+```
+Here, we can see custom netwrok `secure_bridge` and Ip Address of login `172.18.0.2`
+
+- Copy the Ip_Address of Finance and try to ping it from `login` and `logout` container and you will not able to communicate with `finance`
+
+So, `login` and `logout` containers by default 'BRIDGE NETWORK'. So, they were able to communicate with each other. Where as the `finance` container is with custom 'secure network' that we have created. It is completely isolated. this is how you will make your container secure using the concept of Netwroking.
+
+2. Running Container Using Host Network Driver
+==============================================
+
+- When we use Host network driver, port mapping is not required.
+
+```
+    docker run -d --name demo_host --network host nginx
+```
+- Inspect the container 
+```
+    docker inspect demo_host
+```
+
+```
+            "Networks": {
+                "host": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "bb6afdabb370c698ec6404cff82aaec047f04c9476facf4b6ca1403997e600eb",
+                    "EndpointID": "e8ba5becc6f070ffc54423ed6f0a6923d23d18c4c408ef354d47b348a4f76896",
+                    "Gateway": "",
+                    "IPAddress": "",
+                    "IPPrefixLen": 0,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "",
+                    "DriverOpts": null
+```
+There is No Ip_Address available because we are Using Host Network
+
+- We can Access it with Host_IP in browser. 54.91.134.194
+
+>> Welcome To Nginx 
+
+Note: We are running nginx container without port mapping because we are using Host Network driver and we can't assign ports to host network.
+
+3. Running a Container using Macvlan Network Driver
+====================================================
+
+In docker, a common question that usually comes up is 'how do i expose my containers directly to my local physical network?' This is especially so when you are running monitoring aplications that are collecting network statistics and want to connect container legacy applications. a possible solution to this question is to create and implement the macvlan network type.
+
+Macvlan networks are special virtual network that allow you to create "clone" of the physical network interface attached to your Linux servers and attach containers directly your Lan. To ensure this happens, simple designate a physical network interface on your server to a macvlan network which has its own subnet and gateways.
+
+
+- To check list of network drivers `docker network ls`
+
+- Get IP address of Docker Host Machine `ifconfig`
+
+Note: Take IP Address From `eth0` (Subnet & Gateway)
+
+>> inet : 172.31.13.126
+
+Depending on inet we will take Subnet and gate way as 
+
+- Subnet : 172.31.13.0/24
+
+- Gate Way : 172.31.13.1 
+
+Note: AWS Always use '1' as a Gate Way IP
+
+- Create Macvlan network using subnet and gateway
+```
+    docker network create -d macvlan \
+	--subnet=172.31.13.0/24 \
+	--gateway=172.31.13.1 \
+	-o parent=eth0 \
+	my-macvlan
+```
+- Check list of network drivers `docker network ls`
+
+- To inspect network drivers
+```
+    docker network inspect <network-id/network-name>
+```
+If you inspect, there is no container is attached to this network.
+
+- Now Run docker container using macvlan network that we have created
+```
+    docker run --rm -itd \
+    --network=my-macvlan \
+    --ip=172.31.13.110 \
+    alpine:latest \
+    /bin/bash
+```
+- Now Inspect the created Macvlan Network
+``` 
+    docker network inspect <my-macvlan/network-id>
+```
+In Inspect, one container is attached to Macvlan network.
+
+Note: whenever we use this macvlan network, it is going to assign "MacAddress" for our container.
+
+4. None driver : Nothing will be used (No network available)
+===========================================================
+
+5. Overlay Driver : Used in docker Swarm Concept 
+================================================
 
 ## Real World Applications 
-
 
 1. Monolithic Architecture Based App
 
@@ -1740,438 +2172,6 @@ services :
  
 ```
 =========> Later 
-
-# Docker Network
-
-- Docker Networking is all about communication among processes.(Communication from one container to another container using networking)
-
-- Docket network allows containers to connect/communicate with each other and to external networks such as the host network or the internet.
-
-- Docker Network enables a user to link docker container to as many networks as they required.
-
-- Docker network is used to provide complete isolation/IP Address for Docker container
-
-- It allows you to attach your container into many networks
-
-![Docker-Networks](https://github.com/naveensilver/Docker/assets/120022254/8cd42d02-deff-4944-9477-98544e09f4bf)
-
-
-### Advantages Of docker Networking
-
-1) They share single operating system and maintain containers in isolated manner.
-
-2) It requires fewer OS instance to run the workload.
-
-3) It helps in fast delivery of the software.
-
-4) It helps in application Portability.
-
-`Scenario,`
-
-When Docker installed in a machine by default 3 docker network drivers will be configured.
-
-	1. None
-	2. Host 
-	3. Bridge
-
-Note: One container, we can attach to multiple networks
-
-- when container is attached to multiple networks then those containers can communicate.
-
-- Docker providing networking to containers using network drivers.
-
-### Docker Network Drivers
-
-1. Bridge Driver
-2. Host 
-3. None 
-4. Overlay
-5. Macvlan
-
------
-
-1. Bridge : This is the default network driver created on the Docker host machine.
-
-Note: Bridge Network driver are very useful when application running in standalone container(Only one container).
-
-We can see more details about bridge driver using below command 
-```
-docker network inspect bridge
-```
-2. Host Driver : It is useful when standalone container is available.
-
-The container will not get any IP address when we enable Host Driver.
-
-Note: For example a container is executed that binds to port 80 with host network driver. In this case, we no need to map container port to host machine port.
-
-This is useful when we are running our container with large no.of ports.
-
-3. None Driver (null)
-
-In this type of network, the containers will have no access to network.
-
-The None driver simply disable networking for a container, making it isonlate from other containers.
-
-4. Overlay Driver
-
-We will use docker swarm to orchestrate our Docker Containers 
-
-Overlay Driver will be used when we have Docker Swarm Cluster.
-
-5. MacvLan Driver
-
-This network Driver will assign a MAC address to a container
-
-MAC address will make our device as Physical 
-
-Using this MAC address Docker engine routes the traffic to Particular Route.
-
-Macvlan driver simplifies communication between container
-
-### Working With Docker Networking Commands
-
-- To list all the network 
-```
-    docker network ls 
-```
-- Running docker container with default network 
-```
-    docker run --name nginx -d -p 80:80 nginx 
-```
-
-- if you inspect Nginx Image (By default bridge network available)
-```
-    docker inspect nginx 
-```
-- To Remove docker network 
-```
-    docker network rm <network-id>
-```
-- To remove unused networks ALL at a time 
-```
-    docker network prune
-```
-- Creating our own bridge network
-``` 
-    docker network create --driver bridge <network-name>
-```
-Note : If we don't specify driver then by default it will take bridge driver.
-
-- Run the docker container using custom network which we have created
-```
-    docker run --name cont1 -d --network my-network -p 7070:80 nginx
-```
-- To check the containers attached to my-network 
-```
-    docker network inspect my-network
-```
-========================= `Exercise` ========================
-
-1. Running Container Using Bridge Network Driver
-================================================
-
-Now i want to check commununication between containers is happening or not ?
-
-First i will create two containers using nginx image 
-
-	>> nginx1
-    
-	>> nginx2
-
-Both containers will be attached to single network (i.e my-network)
-
-After attaching to single network, then i want to ping one container from another container.
-
-If we are able to ping from one container to another container. then network is success.
-
->> Process:
-
-- Pulling base image from Docker Hub 
-```
-    docker pull nginx
-```
-- Running 2 Docker containers using My-network and check connectivity b/w 2 container using ping command.
-```
-    docker run --name nginx1 -d --network my-network -p 8080:80 nginx
-
-    docker run --name nginx2 -d --network my-network -p 9090:80 nginx
-```
-- Get IP address of docker container 
-
-```
-    docker inspect <ContainerName>
-```
-Here, Check Ip address of conatiner and it is a Bridge network
-```
-    docker inspect -f '{{range.NetworkSettings.Networks}} {{.IPAddress}} {{end}}' <cont-id/cont-name>
-```
->> nginx1 Container IP : 172.19.0.1
->> nginx2 Container IP : 170.19.0.2
-
-- Connect to Nginx1 Container and Ping Nginx2 Container IP
-```
-    docker exec -it nginx1 /bin/bash
-```
-Note: Here, we need to install Ping package
-```
-    apt-get update
-    apt-get install iputils-ping
-    ping -V
-```
-```
-    ping 172.19.0.2
-```
-Ping is successfull means Nginx1 container attached to Nginx2 container
-
-Now, Exit from nginx1 Container `exit` 
-
-- Connect to Nginx2 Container and Ping Nginx1 Container IP
-```
-    docker exec -it nginx2 /bin/bash
-    apt-get update
-    apt-get install iputils-ping
-    ping 172.19.0.1
-```
-Here, Ping Success means Communication between containers is Happening 
-
-Q) How can you secure your container/app Using Concept of networking 
-
-- Using Bridge Networking
-
-Case-1) Container-1 should communicate with Container-2
-Case-2) Container-3 should not communicate with Conatiner-1 and 2 [Isolation]
-
-Case-1) 
-
-- Here, I am Creating a container-1 as `login` and Container-2 as `logout` using nginx image
-
-```
-    docker run -d --name login nginx
-    docker run -d --name logout nginx
-```
-- Lets understand the Ip address of both the container `docker inspect <ContainerName>` and Default Network
-
-Now, Inspect `login` container 
-```
-    docker inspect login
-```
-```
-            "Networks": {
-                "bridge": {
-                    "IPAMConfig": null,
-                    "Links": null,
-                    "Aliases": null,
-                    "NetworkID": "422bbb8272dff0d84e8ef515aebbe2420507c712d561c1e94ad08d130bfda1ab",
-                    "EndpointID": "6b5a276ed6a69119c6ae740596a12ba982acf7c6e5b0e82d3ff309feea49f226",
-                    "Gateway": "172.17.0.1",
-                    "IPAddress": "172.17.0.2",
-                    "IPPrefixLen": 16,
-                    "IPv6Gateway": "",
-                    "GlobalIPv6Address": "",
-                    "GlobalIPv6PrefixLen": 0,
-                    "MacAddress": "02:42:ac:11:00:02",
-                    "DriverOpts": null
-                }
-```
-Here, we can see default netwrok `bridge` and Ip Address of login `172.17.0.2`
-
-Now, Inspect `logout` container
-```
-    docker inspect logout
-```
-```
-            "Networks": {
-                "bridge": {
-                    "IPAMConfig": null,
-                    "Links": null,
-                    "Aliases": null,
-                    "NetworkID": "422bbb8272dff0d84e8ef515aebbe2420507c712d561c1e94ad08d130bfda1ab",
-                    "EndpointID": "5b018ca41cfd184798e0c0645dd326ec769699e9029eb1bd420f564b918ace8c",
-                    "Gateway": "172.17.0.1",
-                    "IPAddress": "172.17.0.3",
-                    "IPPrefixLen": 16,
-                    "IPv6Gateway": "",
-                    "GlobalIPv6Address": "",
-                    "GlobalIPv6PrefixLen": 0,
-                    "MacAddress": "02:42:ac:11:00:03",
-                    "DriverOpts": null
-```
-Here, we can see default netwrok `bridge` and Ip Address of login `172.17.0.3`
-
-- Now, Entering into container and try to communicate with other container using `ping`
-
-```
-    docker exec -it login /bin/bash
-```
-By default ping package is not available for that we have to install ping.
-
-```
-    apt-get update                       #ubuntu
-    apt-get install iputils-ping
-    ping -V
-```
-- Now, We are inside `login` Container and Try to Ping with logout container using `ping <logout_IP_Address>`
-
-```
-    ping 172.17.0.3
-```
-Here, ping got success means One container can access the another container which is on Same Host. Case-1 is Working.
-
-Case-2) Container-3 should not communicate with Conatiner-1 and 2 [Isolation]
-
-Now, I want to create a Conatiner-3 as `finance`. This Container-3 has to `logically Isolated` from cont-1 and conat-2. Why because i want my `finance` container more Secure.
-
-- For that, i am creating custom network i.e., bridge network 
-```
-    docker network create <networkName>
-    docker network create secure_bridge
-```
-- check, the list of docker network 
-```
-    docker network ls
-```
-Here, we can see newly created `secure_network` as `bridge` driver
-
-- Now, try to assign this `secure_network` to `finance` container and let us see if the `login` and `logout` container can talk to `finance` container or not and my expectation would be, They should not be able to communicate with each-other because `finance` cont has some sensitive information and i want to keep this container secure.
-
-```
-    docker run -d --name finance --network secure_bridge nginx
-```
-- Now, Check the Containers list 
-```
-docker ps
-``` 
-Here, we can see `login`,`logout` and `finance` container
-
-- Now, Inspect `finance` container
-```
-    docker inspect finance
-```
-```
-            "Networks": {
-                "secure_bridge": {
-                    "IPAMConfig": null,
-                    "Links": null,
-                    "Aliases": [
-                        "4b971120f45c"
-                    ],
-                    "NetworkID": "b9d3f2bd85afe87698075ddb84d157dd4309903d2334f11f5a408bb9c72bca33",
-                    "EndpointID": "4b445bc79061524584cea2ee46f4ffa887b0fd31b5f3ff866a3649f1a66172eb",
-                    "Gateway": "172.18.0.1",
-                    "IPAddress": "172.18.0.2",
-                    "IPPrefixLen": 16,
-                    "IPv6Gateway": "",
-                    "GlobalIPv6Address": "",
-                    "GlobalIPv6PrefixLen": 0,
-                    "MacAddress": "02:42:ac:12:00:02",
-                    "DriverOpts": null
-```
-Here, we can see custom netwrok `secure_bridge` and Ip Address of login `172.18.0.2`
-
-- Copy the Ip_Address of Finance and try to ping it from `login` and `logout` container and you will not able to communicate with `finance`
-
-So, `login` and `logout` containers by default 'BRIDGE NETWORK'. So, they were able to communicate with each other. Where as the `finance` container is with custom 'secure network' that we have created. It is completely isolated. this is how you will make your container secure using the concept of Netwroking.
-
-2. Running Container Using Host Network Driver
-==============================================
-
-- When we use Host network driver, port mapping is not required.
-
-```
-    docker run -d --name demo_host --network host nginx
-```
-- Inspect the container 
-```
-    docker inspect demo_host
-```
-
-```
-            "Networks": {
-                "host": {
-                    "IPAMConfig": null,
-                    "Links": null,
-                    "Aliases": null,
-                    "NetworkID": "bb6afdabb370c698ec6404cff82aaec047f04c9476facf4b6ca1403997e600eb",
-                    "EndpointID": "e8ba5becc6f070ffc54423ed6f0a6923d23d18c4c408ef354d47b348a4f76896",
-                    "Gateway": "",
-                    "IPAddress": "",
-                    "IPPrefixLen": 0,
-                    "IPv6Gateway": "",
-                    "GlobalIPv6Address": "",
-                    "GlobalIPv6PrefixLen": 0,
-                    "MacAddress": "",
-                    "DriverOpts": null
-```
-There is No Ip_Address available because we are Using Host Network
-
-- We can Access it with Host_IP in browser. 54.91.134.194
-
->> Welcome To Nginx 
-
-Note: We are running nginx container without port mapping because we are using Host Network driver.
-
-3. Running a Container using Macvlan Network Driver
-====================================================
-
-In docker, a common question that usually comes up is 'how do i expose my containers directly to my local physical network?' This is especially so when you are running monitoring aplications that are collecting network statistics and want to connect container legacy applications. a possible solution to this question is to create and implement the macvlan network type.
-
-Macvlan networks are special virtual network that allow you to create "clone" of the physical network interface attached to your Linux servers and attach containers directly your Lan. To ensure this happens, simple designate a physical network interface on your server to a macvlan network which has its own subnet and gateways.
-
-
-- To check list of network drivers `docker network ls`
-
-- Get IP address of Docker Host Machine `ifconfig`
-
-Note: Take IP Address From `eth0` (Subnet & Gateway)
-
->> inet : 172.31.13.126
-
-Depending on inet we will take Subnet and gate way as 
-
-- Subnet : 172.31.13.0/24
-
-- Gate Way : 172.31.13.1 
-
-Note: AWS Always use '1' as a Gate Way IP
-
-- Create Macvlan network using subnet and gateway
-```
-    docker network create -d macvlan \
-	--subnet=172.31.13.0/24 \
-	--gateway=172.31.13.1 \
-	-o parent=eth0 \
-	my-macvlan
-```
-- Check list of network drivers `docker network ls`
-
-- To inspect network drivers
-```
-    docker network inspect <network-id/network-name>
-```
-If you inspect, there is no container is attached to this network.
-
-- Now Run docker container using macvlan network that we have created
-```
-    docker run --rm -itd \
-    --network=my-macvlan \
-    --ip=172.31.13.110 \
-    alpine:latest \
-    /bin/bash
-```
-- Now Inspect the created Macvlan Network
-``` 
-    docker network inspect <my-macvlan/network-id>
-```
-In Inspect, one container is attached to Macvlan network.
-
-Note: whenever we use this macvlan network, it is going to assign "MacAddress" for our container.
-
-4. None driver : Nothing will be used (No network available)
-===========================================================
-
-5. Overlay Driver : Used in docker Swarm Concept 
-================================================
-
 
 # Docker Swarm
 
