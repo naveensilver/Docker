@@ -12,6 +12,7 @@
 
 - Every Monolithic has only one database for all the services.
 
+
 ## Micro-Service 
 
 - If the application contains N number of services.
@@ -21,6 +22,20 @@
 - If every service has its own individual servers then it is called Microservices.
 
 - Every Micro service architecture has its own database for each service.
+
+`Scenario`, if you have bug in one service.
+
+U need to fix the issue, 
+
+if you use Monolythic, we have to stop the entire server and fix the bug.
+
+if you use Micro-service, we have to stop only one service and users can access other services and fix that issue.
+
+In Monolythic, Maintaining one server is esay 
+
+In Micro-services, Maintaining multiple services is difficult.
+
+For that, we use `Docker`
 
 # Introduction to Docker
 
@@ -157,16 +172,16 @@
 ## Containers vs Virtual Machine [Containerisation vs Virtualisation]
 
 Containers and virtual machines are both technologies used to isolate applications and their dependencies, but they have some key differences:
+```
+1. Resource Utilization: Containers share the host operating system kernel, making them lighter and faster than VMs. VMs have a full-fledged OS and hypervisor, making them more resource-intensive.
 
-    1. Resource Utilization: Containers share the host operating system kernel, making them lighter and faster than VMs. VMs have a full-fledged OS and hypervisor, making them more resource-intensive.
+2. Portability: Containers are designed to be portable and can run on any system with a compatible host operating system. VMs are less portable as they need a compatible hypervisor to run.
 
-    2. Portability: Containers are designed to be portable and can run on any system with a compatible host operating system. VMs are less portable as they need a compatible hypervisor to run.
-
-    3. Security: VMs provide a higher level of security as each VM has its own operating system and can be isolated from the host and other VMs. Containers provide less isolation, as they share the host operating system.
+3. Security: VMs provide a higher level of security as each VM has its own operating system and can be isolated from the host and other VMs. Containers provide less isolation, as they share the host operating system.
     
-    4. Management: Managing containers is typically easier than managing VMs, as containers are designed to be lightweight and fast-moving.
+4. Management: Managing containers is typically easier than managing VMs, as containers are designed to be lightweight and fast-moving.
 
-
+```
 ## Why are containers light weight ?
 
 Containers are lightweight because they use a technology called containerization, which allows them to share the host operating system's kernel and libraries, while still providing isolation for the application and its dependencies. This results in a smaller footprint compared to traditional virtual machines, as the containers do not need to include a full operating system. Additionally, Docker containers are designed to be minimal, only including what is necessary for the application to run, further reducing their size.
@@ -268,9 +283,9 @@ The architecture of Docker consists of several components that work together to 
 
 ------------
 
-1.	Docker client: The Docker client is a command-line interface (CLI) tool that allows users to interact with the Docker daemon. The client sends commands to the daemon, which in turn executes them.
+1. Docker client: The Docker client is a command-line interface (CLI) tool that allows users to interact with the Docker daemon. The client sends commands to the daemon, which in turn executes them.
 
-2.	Docker Host: It is machine where we installed docker engine/docker
+2. Docker Host: It is machine where we installed docker engine/docker
 
 - `Docker daemon:` The Docker daemon (Dockerd) is the core component of Docker architecture. Daemon runs on the host operating system and manages all the containers, images, networks, and volumes on the Docker host. Daemon is also called as Docker Engine.
 
@@ -282,7 +297,7 @@ The architecture of Docker consists of several components that work together to 
 
     - `Docker volumes:` Docker volumes are used to persist data between container restarts. They are stored outside of the container, allowing data to be shared between containers or to be stored on the host.
 
-3.	Docker registry: Docker registry is a place where we can store and retrieve docker images. which is free and open source. we can download the images and used to create the containers. docker registry is also called as Docker Hub.
+3. Docker registry: Docker registry is a place where we can store and retrieve docker images. which is free and open source. we can download the images and used to create the containers. docker registry is also called as Docker Hub.
 
 There are two types of Registry are available 
 
@@ -487,9 +502,14 @@ docker images  # To see list of docker images
 
 docker ps # To See List of Container
 
-docker pull <image-id> #download the docker image from docker-hub
+docker pull <image-id> # download the docker image from docker-hub
 
-docker run <image-id> 
+docker run <image-id>  # To create container (default name)
+
+docker run -it --name contName imageName # create container and enter into container 
+
+    [-it : interactive terminal] 
+    [ctrl + p+q : exit from container without stopping container]
 
 docker push <image-id> # To store the image in Docker Hub
 
@@ -499,9 +519,9 @@ docker tag #Image Versions
 
 docker rmi <image-id>
 
-- To Check Images List : `$ docker images`
+- To Check Images List : `docker images`
 
-- To Check Container list : `$ docker ps -a`
+- To Check Container list : `docker ps -a`
 
 - To pull the image from Docker hub : `docker pull <imageName>`
 
@@ -516,9 +536,83 @@ Note : we can't remove running containers
 
 - To Remove Image : $ docker rmi <ImageName>
 
+Q) Create A Container From Image in Diff ways / Running a Container using IMAGE :
+
+docker run -it --name <container> <image>              
+
+docker run -it --name cont1 -p 8077:80 image1  with port number 
+
+ 	(it – interactive terminal (Container Up state) | -p – port | 8077 – host port(any no.) | 80 – container port [constant])
+
+Note: You can access container in Browser = Host Public_IP:8077
+
+docker run -it --name cont1 -d ubuntu = de tact mode (-d)
+
+docker run -it --name cont2 -d -p 8080:80 ubuntu = de tact(-d) mode with port number (-p)
+
+docker exec -it cont1 /bin/bash  = entering into container and exit without stopping a container
+
+
 # Docker Image Commands:
 
+docker ps / docker container ls – To see only running/up containers
+
+docker ps -a / docker container ls -a [ ps=processor -a=all]  - To see all containers (Running containers as well as exited container)
+
+docker container ls -n 2 – To see latest 2 containers
+
+docker container ls --latest – To see latest containers
+
+docker container ls -a -q – To see only container ID (-q is ID)
+
+docker container ls -a -s : To see containers along with Size
+
+docker run <ubuntu/image> - To get the image as well as create a container
+
+docker pull <ubuntu/image> - To get the image from docker hub
+
+docker container prune
+
+docker image prune/docker rmi <image>
+
+docker rmi <nginx ubuntu>
+
+docker commit <cont1> <image1> = create a image from container 
+
+docker image prune = remove only existed images all at a time
+
+docker rmi nginx ubuntu  = remove multiple images
+
+docker image inspect <image1> = every detail of a image  
+
+
 # Docker Container Commands
+ 
+docker start <cont1>
+
+docker start <cont1> <cont2> 
+
+docker stop <cont1> - To stop container
+
+docker stop <cont1> <cont2>
+
+docker stop $(docker ps -a -q) = To stop all the containers at a time 
+
+docker rm <cont1> = To delete container
+
+docker rm <cont1> <cont2> 
+
+docker container prune = To remove all exited/stopped containers
+
+docker rm $(docker ps -a -q) = To delete all the containers at a time 
+
+docker attach <cont1> = enter into container 
+
+    ctrl+p+q = exit from container without stopping a container 
+
+docker rename <old_cont> <new_cont>
+
+docker inspect <cont1>
 
 Tasks:
 ======
@@ -599,10 +693,51 @@ Q) How To Change Container Port Number
     docker start cont1
     docker ps 
 ```
+
+Q) Where is default docker directory path in Host server ?
+
+- cd /var/lib/docker/
+
+```
+drwx--x--x  4 root root  120 Mar 12 15:11 buildkit
+drwx--x---  9 root root 4096 Mar 19 09:31 containers # container info 
+drwx------  3 root root   22 Mar 12 15:11 image # image info
+drwxr-x---  3 root root   19 Mar 12 15:11 network # network info
+drwx--x--- 35 root root 4096 Mar 19 09:36 overlay2
+drwx------  4 root root   32 Mar 12 15:11 plugins
+drwx------  2 root root    6 Mar 19 09:36 runtimes
+drwx------  2 root root    6 Mar 12 15:11 swarm
+drwx------  2 root root    6 Mar 19 09:36 tmp
+drwx------  2 root root    6 Mar 12 15:11 trust
+drwx-----x  3 root root   65 Mar 19 09:36 volumes # volume info
+```
+
 Q) Why Host Port is 80 for Every Container 
 
 - Because all the webserver like Nginx, Apache are running in default 80 port. 
 
+
+# Registry 
+
+- Registry is used to store and destributing container images.
+
+- Registries are two types :
+
+1. Cloud Based Registry 
+
+    - Docker Hub 
+
+    - Elastic container registry (AWS ECR)
+    
+    - Google container registry (GCR)
+
+2. Local Registry 
+
+    - Nexus 
+    
+    - jFrog
+
+    - Docker trusted registry (DTR)
 
 ## Docker HUB
 
@@ -615,6 +750,8 @@ Q) Why Host Port is 80 for Every Container
 - Additionally, it allows user to upload the docker images and make them available to other in the community
 
 ### Why Docker Hub
+
+![Screenshot (111)](https://github.com/naveensilver/Docker/assets/120022254/e6c432c7-11e1-4447-8a89-4483121e224d)
 
 -	In real time, We write the docker file and build the image using docker file 
 
@@ -737,7 +874,7 @@ Here,
 ```
     docker push naveensilver/myrepo
 ```
-4. Whenever we want to create a container by using this image.
+4. Create a container by using this image.
 
 - First, we can pull that image from Docker hub using 
 ```
@@ -758,7 +895,14 @@ In real time also, we store that image in Project Docker Hub
 
 So, We can Pull & Run the image in Multiple Environments. Ex: Dev, Test, Prod
 
-Note: If you inspect image `docker image inspect <image1>`. We can see the layers. i.e, No of tasks = No. of layers. 
+Note: If you inspect image `docker image inspect <image1>`. We can see the layers. i.e, No of tasks in Dockerfile = No. of layers.
+
+```
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:5498e8c22f6996f25ef193ee58617d5b37e2a96decf22e72de13c3b34e147591"
+```
 
 ---------------------
 
@@ -831,7 +975,7 @@ Q) Diff B/w RUN, CMD & ENTRYPOINT
 
 - RUN used to execute the commands on top of base image.
 
-- RUN instructions will execute while creating an image.
+- RUN instructions will execute while creating an image `docker build -t <imageName> .`
 
 - We can write multiple RUN instructions, they will execute in order (Top-Bottom)
 
@@ -847,7 +991,7 @@ Ex:
 
 - CMD is also used to execute commands.
 
-- CMD instruction will execute while creating container(Running a image).
+- CMD instruction will execute while creating container (Running a image) `docker run -it <image> <Container>`
 
 - We Can write multiple CMD instructions in Dockerfile but docker will execute only last CMD instructions.
 
@@ -882,7 +1026,7 @@ Note : CMD instruction we can overwrite using runtime CMD
 
 7. ENTRYPOINT
 
-- Entrypoint instructions will execute while creating container(Run a image)
+- Entrypoint instructions will execute while creating container(Run a image) `docker run`
 
 - ENTRYPOINT has high priority than CMD because it will overwrite the values of CMD.
 
@@ -979,8 +1123,7 @@ Syntax:
 	LABEL branch $branch
     RUN echo "i am $branch"
 ```
-Note : we can change argument values in RUNTIME/CLI
-`docker build -t <ImageName> --build-arg <var_name>=<value>`
+Note : we can change argument values in RUNTIME/CLI `docker build -t <ImageName> --build-arg <var_name>=<value>`
 ```
 docker build -t image1 --build-arg branch=feature
 ```
@@ -1108,7 +1251,6 @@ In Simple,
 - Volume is simply called as a directory inside a container.
 
 ### Difference b/w Volume and Directory
-
 
 - Volumes can't be deleted, But directories can. 
 
@@ -1967,7 +2109,7 @@ User Interface >>
 	- Payment Service
 	- Tracking Service
 
-- Every Service/API is a Project and it should run in a container.
+- Every Service/API(Application Programming Interface) is a Project and it should run in a container.
 
 - Running multiple containers manually for all Services is difficult Job.
 
