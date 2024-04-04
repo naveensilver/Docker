@@ -254,7 +254,7 @@ I hope it is now very clear why containers are light weight in nature.
 
 ## What is Docker ?
 
-Docker is a containerization platform that provides easy way to containerize your applications, which means, using Docker you can build container images, run the images to create containers and also push these containers to container regestries such as DockerHub, Quay.io and so on.
+Docker is a containerization platform that provides easy way to containerize your applications, which means, using Docker you can build container images, run the images to create containers and also push these containers to container regestries such as DockerHub, Query.io and so on.
 
 In simple words, you can understand as `containerization is a concept or technology` and `Docker Implements Containerization`.
 
@@ -300,7 +300,7 @@ There are two types of Registry are available
 
 - Public - Docker Hub is a public registry. Everybody can store and retrieve images
 
-- Private - Nexus, J frog, AWS ECR (Elastic container registry) are private registries - company specific
+- Private - Nexus, JFrog, AWS ECR (Elastic container registry) are private registries - company specific
 
 Overall, Docker architecture provides a powerful and flexible platform for building, deploying, and managing applications in containers.
 
@@ -527,6 +527,7 @@ docker rmi <image-id>
 - To Start container :  `docker start <container_ID/ContainerName>`
 
 - To Delete stopped container (few) : `docker rm <container_ID/ContainerName> `
+- 
 - To Delete all the stopped/Exited containers (Multiple) : `docker container prune`
 
 Note : we can't remove running containers 
@@ -535,9 +536,9 @@ Note : we can't remove running containers
 
 Q) Create A Container From Image in Diff ways / Running a Container using IMAGE :
 
-docker run -it --name <container> <image>              
+docker run -it --name [container] [image]            
 
-docker run -it --name cont1 -p 8077:80 image1  with port number 
+docker run -it --name cont1 -p 8077:80 image1 # with port number 
 
  	(it – interactive terminal (Container Up state) | -p – port | 8077 – host port(any no.) | 80 – container port [constant])
 
