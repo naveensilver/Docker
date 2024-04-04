@@ -552,7 +552,7 @@ docker exec -it cont1 /bin/bash  = entering into container and exit without stop
 
 
 # Docker Image Commands:
-
+```
 docker ps / docker container ls – To see only running/up containers
 
 docker ps -a / docker container ls -a [ ps=processor -a=all]  - To see all containers (Running containers as well as exited container)
@@ -582,13 +582,13 @@ docker image prune = remove only existed images all at a time
 docker rmi nginx ubuntu  = remove multiple images
 
 docker image inspect <image1> = every detail of a image  
-
+```
 
 # Docker Container Commands
- 
-docker start <cont1>
+``` 
+docker start [cont1]
 
-docker start <cont1> <cont2> 
+docker start [cont1] [cont2]
 
 docker stop <cont1> - To stop container
 
@@ -611,6 +611,7 @@ docker attach <cont1> = enter into container
 docker rename <old_cont> <new_cont>
 
 docker inspect <cont1>
+```
 
 Tasks:
 ======
