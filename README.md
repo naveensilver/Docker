@@ -215,8 +215,6 @@ To provide a better picture of files and folders that containers base images hav
     /root: is the home directory of the root user.
 ```
 
-
-
 ### Files and Folders that containers use from host operating system
 
 ```
@@ -228,8 +226,7 @@ To provide a better picture of files and folders that containers base images hav
 
     Namespaces: Docker containers use Linux namespaces to create isolated environments for the container's processes. Namespaces provide isolation for resources such as the file system, process ID, and network.
 
-    Control groups (cgroups): Docker containers use cgroups to limit and control the amount of resources, such as CPU, memory, and I/O, that a container can access.
-    
+    Control groups (cgroups): Docker containers use cgroups to limit and control the amount of resources, such as CPU, memory, and I/O, that a container can access.   
 ```
 
 It's important to note that while a container uses resources from the host operating system, it is still isolated from the host and other containers, so changes to the container do not affect the host or other containers.
@@ -295,7 +292,7 @@ The architecture of Docker consists of several components that work together to 
 
     - `Docker networks:` Docker networks are used to connect multiple containers together, enabling communication between them.
 
-    - `Docker volumes:` Docker volumes are used to persist data between container restarts. They are stored outside of the container, allowing data to be shared between containers or to be stored on the host.
+    - `Docker volumes:` Docker volumes are used to persist data between containers. They are stored outside of the container, allowing data to be shared between containers or to be stored on the host.
 
 3. Docker registry: Docker registry is a place where we can store and retrieve docker images. which is free and open source. we can download the images and used to create the containers. docker registry is also called as Docker Hub.
 
