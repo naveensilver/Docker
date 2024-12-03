@@ -786,7 +786,7 @@ Q) How to push Images to Docker Hub
     docker push naveensilver/repo-1:version1
 ```
 
-Note: We can't push Multiple Image at a time. Each Repo is having only one image. If you push new image in same repo, old image will be deleted.
+Note: We can't push Multiple Image at a time. Each Repo is having only one image version. If you push same image version in same repo, old image version will be deleted.
 
 Using `docker pull naveensilver/repo-1:version1` can get image from docker registry.
 
